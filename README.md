@@ -1,2 +1,2 @@
-# the-boys
-Trabalho final da matéria de Programação 1
+# The Boys - The Discrete Superhero Simulator
+Final project for the Programming 1 course. A simulation of a world with superheroes, bases, missions and invasions.
