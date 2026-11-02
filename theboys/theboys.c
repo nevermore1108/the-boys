@@ -1,5 +1,5 @@
-// programa principal do projeto "The Boys - 2024/2"
-// Autor: xxxxx, GRR xxxxxx
+// programa principal do projeto "The Boys - 2026/2"
+// Autor: Bernardo Fonseca do Nascimento, GRR 20264337
 
 // seus #includes vão aqui
 
