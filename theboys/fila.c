@@ -40,17 +40,15 @@ int fila_insere (struct fila_t *f, void *item) {
 		return -1;
 
 	struct fila_nodo_t *atual = f->prim;
-  struct fila_nodo_t *novo = malloc (sizeof (struct fila_nodo_t)); //Aloca memória pro item inserido
-	
-  if (!novo) //Testa se a alocação funcionou
-		return -1;
-  
-  //Verifica se o mesmo ponteiro já está na fila.
-	while (atual) {
+	while (atual) { //Verifica se o mesmo ponteiro já está na fila.
 		if (atual->item == item)
 			return -1;
 		atual = atual->prox;
 	}
+
+  struct fila_nodo_t *novo = malloc (sizeof (struct fila_nodo_t)); //Aloca memória pro item inserido
+  if (!novo) //Testa se a alocação funcionou
+		return -1;
 
   //Insere o item no item e inicializa o prox
 	novo->item = item;
