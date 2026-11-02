@@ -8,22 +8,6 @@
 #include <string.h>
 #include "fprio.h"
 
-//Descreve um nodo da fila de prioridades
-struct fpnodo_t
-{
-  void *item ;          //Item associado ao nodo
-  int   tipo ;          //Tipo do item
-  int   prio ;          //Prioridade do item
-  struct fpnodo_t *prox;    //Próximo nodo
-};
-
-//Descreve uma fila de prioridades
-struct fprio_t
-{
-  struct fpnodo_t *prim ;   //Primeiro nodo da fila
-  int num ;         //Número de itens na fila
-} ;
-
 //Cria uma fila vazia.
 //Retorno: ponteiro para a fila criada ou NULL se erro.
 struct fprio_t *fprio_cria (){
