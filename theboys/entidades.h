@@ -77,8 +77,9 @@ struct mundo *cria_mundo ();
 void simulacao(struct mundo *w);
 
 /*Destrói o mundo criado, desalocando e liberando a memória utilizada
+|*Retorno: NULL
 |*Nota: Eu gostaria muito de ter chamado essa função de
-|* "heat_death_of_the_universe" :( */
-void destroi_mundo (struct mundo *w);
+|*"heat_death_of_the_universe" :( */
+struct mundo destroi_mundo (struct mundo *w);
 
 #endif

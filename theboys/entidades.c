@@ -60,4 +60,58 @@ struct mundo *cria_mundo (){
 void simulacao(struct mundo *w);
 
 //Destrói o mundo criado, desalocando e liberando a memória utilizada 
-void destroi_mundo (struct mundo *w);
+//Retorno: NULL
+struct mundo destroi_mundo (struct mundo *w){
+    int i;
+    if (!w) //Se não existir mundo, retorna
+        return;
+
+    for (i = 0; i < N_HEROIS; i++){ //Libera os heróis
+        if (w->herois[i]){
+            if (w->herois[i]->hab) //Destroi o conjunto de habilidades
+                w->herois[i]->hab = cjto_destroi(w->herois[i]->hab);
+
+            free(w->herois[i]);
+        }
+
+        free (w->herois);
+    }
+
+    for (i = 0; i < N_BASES; i++){ //Libera as bases
+        if (w->bases[i]){
+            if (w->bases[i]->presentes) //Destroi o conjunto de presentes
+                w->bases[i]->presentes = cjto_destroi(w->bases[i]->presentes);
+
+            if (w->bases[i]->espera) //Destroi a fila de espera
+                w->bases[i]->espera = fila_destroi(w->bases[i]->espera);
+
+            free(w->bases[i]);
+        }
+
+        free (w->bases);
+    }
+
+    for (i = 0; i < N_MISSOES; i++){ //Libera as missões
+        if (w->missoes[i]){
+            if (w->missoes[i]->hab) //Destroi o conjunto de habilidades
+                w->missoes[i]->hab = cjto_destroi(w->missoes[i]->hab);
+
+            free(w->missoes[i]);
+        }
+
+        free (w->bases);
+    }
+
+    for (i = 0; i < N_INVASOES; i++){ //Libera as invasões
+        if (w->invasoes[i])
+            free(w->invasoes[i]);
+
+        free (w->invasoes);
+    }
+
+    w->lef = fprio_destroi(w->lef);
+    free(w->lef);
+    free(w);
+
+    return NULL;
+}
