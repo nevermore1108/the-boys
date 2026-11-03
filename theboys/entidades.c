@@ -6,9 +6,33 @@
 #include "fprio.h"
 #include "entidades.h"
 
-//Cria um herói com seus atributos
-struct heroi *cria_heroi (int id){
+//Retorna um número aleatório entre min e max, inclusive
+long aleat (long min, long max){
+  return ((rand() % (2*max + 1)) + min);
+}
 
+//Cria um herói com seus atributos
+//Retorno: ponteiro para o herói ou NULL se erro
+struct heroi *cria_heroi (int id){
+    struct heroi *h = malloc (sizeof (struct heroi)); //Aloca memória para o herói
+
+    if (!h) //Se tiver problemas na alocação, retorna NULL
+        return NULL;
+    
+    h->id = id; //Recebe o id
+    h->estado = 1; //Começa ativo
+    h->paciencia = aleat (1, 100); //Paciência aleatória
+    h->vel = aleat (50, 5000); //Velocidade Aleatória
+    h->exp = 0; //Começa com 0 de exp
+    h->base = -1; //Começa fora de qualquer base
+    h->hab = cjto_aleat(aleat(1, 3), N_HABILIDADES); //Cria o conjunto das habilidades
+
+    if (!h->hab){ //Se tiver problemas na alocação, libera e retorna NULL
+        free(h);
+        return NULL;
+    }
+
+    return h;
 }
 
 //Cria uma base com seus atributos
@@ -29,6 +53,8 @@ struct invasao *cria_invasao (int id){
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
 //Retorno: ponteiro para o mundo criado ou NULL se erro.
 struct mundo *cria_mundo (){
+    srand(0);
+
     int i;
     struct mundo *w = malloc (sizeof (struct mundo)); //Aloca memória para o mundo
 
@@ -46,6 +72,9 @@ struct mundo *cria_mundo (){
     
     for (i = 0; i < N_INVASOES; i++) //Cria as invasões
         w->invasoes[i] = cria_invasao(i);
+
+    if (!w->herois || !w->bases || !w->missoes || !w->invasoes)
+        return NULL;
     
     w->tamanho.x = N_TAMANHO_MUNDO;
     w->tamanho.y = N_TAMANHO_MUNDO;
@@ -64,7 +93,7 @@ void simulacao(struct mundo *w);
 struct mundo *destroi_mundo (struct mundo *w){
     int i;
     if (!w) //Se não existir mundo, retorna
-        return;
+        return NULL;
 
     for (i = 0; i < N_HEROIS; i++){ //Libera os heróis
         if (w->herois[i]){
