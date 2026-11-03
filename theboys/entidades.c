@@ -6,6 +6,26 @@
 #include "fprio.h"
 #include "entidades.h"
 
+//Cria um herói com seus atributos
+struct heroi *cria_heroi (int id){
+
+}
+
+//Cria uma base com seus atributos
+struct base *cria_base (int id){
+
+}
+
+//Cria uma missão com seus atributos
+struct missao *cria_missao (int id){
+
+}
+
+//Cria uma invasão com seus atributos
+struct invasao *cria_invasao (int id){
+
+}
+
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
 //Retorno: ponteiro para o mundo criado ou NULL se erro.
 struct mundo *cria_mundo (){
