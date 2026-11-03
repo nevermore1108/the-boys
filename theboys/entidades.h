@@ -80,6 +80,6 @@ void simulacao(struct mundo *w);
 |*Retorno: NULL
 |*Nota: Eu gostaria muito de ter chamado essa função de
 |*"heat_death_of_the_universe" :( */
-struct mundo destroi_mundo (struct mundo *w);
+struct mundo *destroi_mundo (struct mundo *w);
 
 #endif

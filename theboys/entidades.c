@@ -61,7 +61,7 @@ void simulacao(struct mundo *w);
 
 //Destrói o mundo criado, desalocando e liberando a memória utilizada 
 //Retorno: NULL
-struct mundo destroi_mundo (struct mundo *w){
+struct mundo *destroi_mundo (struct mundo *w){
     int i;
     if (!w) //Se não existir mundo, retorna
         return;
@@ -73,9 +73,8 @@ struct mundo destroi_mundo (struct mundo *w){
 
             free(w->herois[i]);
         }
-
-        free (w->herois);
     }
+    free (w->herois);
 
     for (i = 0; i < N_BASES; i++){ //Libera as bases
         if (w->bases[i]){
@@ -87,9 +86,8 @@ struct mundo destroi_mundo (struct mundo *w){
 
             free(w->bases[i]);
         }
-
-        free (w->bases);
     }
+    free (w->bases);
 
     for (i = 0; i < N_MISSOES; i++){ //Libera as missões
         if (w->missoes[i]){
@@ -98,19 +96,16 @@ struct mundo destroi_mundo (struct mundo *w){
 
             free(w->missoes[i]);
         }
-
-        free (w->bases);
     }
+    free (w->missoes);
 
     for (i = 0; i < N_INVASOES; i++){ //Libera as invasões
         if (w->invasoes[i])
             free(w->invasoes[i]);
-
-        free (w->invasoes);
     }
+    free (w->invasoes);
 
     w->lef = fprio_destroi(w->lef);
-    free(w->lef);
     free(w);
 
     return NULL;
