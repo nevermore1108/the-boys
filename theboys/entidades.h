@@ -68,6 +68,7 @@ struct mundo {
 };
 
 /*Cria o mundo, com seus heróis, bases, missões e invasões definidos 
+|*Retorno: ponteiro para o mundo criado ou NULL se erro
 |*Nota: Eu gostaria muito de ter chamado essa função de "big_bang" :( */
 struct mundo *cria_mundo (); 
 
@@ -75,7 +76,7 @@ struct mundo *cria_mundo ();
 |*Nota: Eu gostaria muito de ter chamado essa função de "dia_a_dia" :(*/
 void simulacao(struct mundo *w);
 
-/*Destrói o mundo criado, desalocando e liberando a memória utilizada 
+/*Destrói o mundo criado, desalocando e liberando a memória utilizada
 |*Nota: Eu gostaria muito de ter chamado essa função de
 |* "heat_death_of_the_universe" :( */
 void destroi_mundo (struct mundo *w);

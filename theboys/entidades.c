@@ -7,6 +7,7 @@
 #include "entidades.h"
 
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
+//Retorno: ponteiro para o mundo criado ou NULL se erro.
 struct mundo *cria_mundo (){
     int i;
     struct mundo *w = malloc (sizeof (struct mundo)); //Aloca memória para o mundo
@@ -32,6 +33,7 @@ struct mundo *cria_mundo (){
     w->eventos_tratados = 0;
     w->lef = fprio_cria();
 
+    return w;
 }
 
 //Roda a simulação até chegar no fim da LEF
