@@ -26,7 +26,6 @@ struct heroi {
     int vel; //Velocidade do herói
     int exp; //Experiência do herói
     int base; //ID da base que o herói está
-    int vivo; //Herói está vivo (1) ou morto (0)
 };
 
 struct base {
@@ -58,10 +57,10 @@ struct invasao {
 };
 
 struct mundo {
-    struct heroi *heroi[N_HEROIS]; //Vetor com todos os heróis
-    struct base *base[N_BASES]; //Vetor com todas as bases
-    struct missao *missao[N_MISSOES]; //Vetor com todas as missões
-    struct invasao *invasao[N_INVASOES]; //Vetor com todas as invasões
+    struct heroi *herois[N_HEROIS]; //Vetor com todos os heróis
+    struct base *bases[N_BASES]; //Vetor com todas as bases
+    struct missao *missoes[N_MISSOES]; //Vetor com todas as missões
+    struct invasao *invasoes[N_INVASOES]; //Vetor com todas as invasões
     struct posicao tamanho; //Tamanho máximo do mundo
     int relogio; //Tempo atual no mundo
     int eventos_tratados; //Quantidade de eventos tratados
