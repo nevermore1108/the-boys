@@ -67,4 +67,17 @@ struct mundo {
     struct fprio_t *lef; //Lista de Eventos Futuros 
 };
 
+/*Cria o mundo, com seus heróis, bases, missões e invasões definidos 
+|*Nota: Eu gostaria muito de ter chamado essa função de "big_bang" :( */
+struct mundo *cria_mundo (); 
+
+/*Roda a simulação até chegar no fim da LEF
+|*Nota: Eu gostaria muito de ter chamado essa função de "dia_a_dia" :(*/
+void simulacao(struct mundo *w);
+
+/*Destrói o mundo criado, desalocando e liberando a memória utilizada 
+|*Nota: Eu gostaria muito de ter chamado essa função de
+|* "heat_death_of_the_universe" :( */
+void destroi_mundo (struct mundo *w);
+
 #endif
