@@ -20,12 +20,12 @@ struct posicao {
 
 struct heroi {
     int id; //ID do herói
-    struct cjto_t *hab; //Conjunto de habilidades
+    struct cjto_t *hab; //Conjunto de habilidades do herói
     int estado; //Estado atual do herói, 1 (ativo) e 0 (inativo)
     int paciencia; //Nível de paciência do herói
     int vel; //Velocidade do herói
-    int exp; //Experiência do herói
-    int base; //ID da base que o herói está
+    int exp; //Quantidade de missões que o herói participou, experiência
+    int base; //ID da base que o herói está, -1 se em nenhuma base
 };
 
 struct base {
@@ -34,26 +34,26 @@ struct base {
     struct cjto_t *presentes; //Conjunto de heróis presentes na base
     int estado; //Estado atual da base, 1 (ativa) e 0 (inativa)
     struct fila_t *espera; //Fila de espera da base
-    struct posicao local; //Localização da base no mundo
-    int missoes; //Quantidade de missóes participadas
-    int max; //Maior fila atingida na base
+    struct posicao local; //Localização, coordenadas X e Y, da base no mundo
+    int missoes; //Quantidade de missóes participadas pela base
+    int max; //Maior fila de espera atingida na base
 };
 
 struct missao {
     int id; //ID da missão
-    struct cjto_t *hab; //Conjunto de habilidades para completar a missão
+    struct cjto_t *hab; //Conjunto de habilidades necessárias para completar a missão
     int perigo; //Nível de perigo da missão
-    struct posicao local; //Local que a missão vai acontecer
-    int completa; //Missão cumprida (1) ou não (0)
-    int tentativas; //Quantas tentativas teve
+    struct posicao local; //Local, coordenadas X e Y, que a missão vai acontecer
+    int completa; //Missão foi cumprida (1) ou não (0)
+    int tentativas; //Quantas tentativas a missão teve
 };
 
 struct invasao {
     int id; //ID da invasão
-    int local; //ID da base que vai ocorrer
+    int local; //ID da base que vai ocorrer a invasão
     int tpb; //Tempo de penalidade da base
     int tph; //Tempo de penalidade do herói
-    int realizada; //Invasão realizada (1) ou não (0)
+    int realizada; //Invasão foi realizada (1) ou não (0)
 };
 
 struct mundo {
@@ -63,7 +63,7 @@ struct mundo {
     struct invasao *invasoes[N_INVASOES]; //Vetor com todas as invasões
     struct posicao tamanho; //Tamanho máximo do mundo
     int relogio; //Tempo atual no mundo
-    int eventos_tratados; //Quantidade de eventos tratados
+    int eventos_tratados; //Quantidade de eventos tratados na simulação
     struct fprio_t *lef; //Lista de Eventos Futuros 
 };
 
