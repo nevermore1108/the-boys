@@ -5,11 +5,7 @@
 #include "fila.h"
 #include "fprio.h"
 #include "entidades.h"
-
-//Retorna um número aleatório entre min e max, inclusive
-long aleat (long min, long max){
-  return ((rand() % (2*max + 1)) + min);
-}
+#include "auxiliares.h"
 
 //Cria um herói com seus atributos
 //Retorno: ponteiro para o herói ou NULL se erro
