@@ -139,7 +139,7 @@ struct mundo *cria_mundo (){
 }
 
 //Roda a simulação até chegar no fim da LEF
-void simulacao(struct mundo *w);
+void simulacao(struct mundo *w); //Levar pro simulação.c
 
 //Destrói o mundo criado, desalocando e liberando a memória utilizada 
 //Retorno: NULL
