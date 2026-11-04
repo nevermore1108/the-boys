@@ -5,8 +5,8 @@
 #include "fprio.h"
 
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 525600 // 525600 = 60*24*365 = 365 dias
-#define N_TAMANHO_MUNDO 20000
+#define T_FIM_DO_MUNDO (30*24*60) //525600  525600 = 60*24*365 = 365 dias
+#define N_TAMANHO_MUNDO 20000 //1000
 #define N_HABILIDADES 10
 #define N_HEROIS (N_HABILIDADES * 5)
 #define N_BASES (N_HEROIS / 5)
@@ -64,6 +64,7 @@ struct mundo {
     struct posicao tamanho; //Tamanho máximo do mundo
     int relogio; //Tempo atual no mundo
     int eventos_tratados; //Quantidade de eventos tratados na simulação
+    int mortos
     struct fprio_t *lef; //Lista de Eventos Futuros 
 };
 
