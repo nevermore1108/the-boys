@@ -92,7 +92,19 @@ struct missao *cria_missao (int id){
 
 //Cria uma invasão com seus atributos
 struct invasao *cria_invasao (int id){
+    struct invasao *i = malloc (sizeof (struct invasao)); //Aloca memória para a missao
 
+    if (!i) //Se tiver problemas na alocação, retorna NULL
+        return NULL;
+    
+    i->id = id; //Recebe o id
+    //Recebe suas coordenadas X e Y
+    i->local = aleat (0, N_BASES-1);
+    i->tph = aleat (0, 4320);
+    i->tpb = aleat (1, 7200); //Lotação máxima aleatória
+    i->realizada = 0; //Começa incompleta
+
+    return i;
 }
 
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
