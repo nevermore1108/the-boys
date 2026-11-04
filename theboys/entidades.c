@@ -43,6 +43,7 @@ struct base *cria_base (int id){
         return NULL;
     
     b->id = id; //Recebe o id
+    b->local = malloc (sizeof (struct posicao)); //Aloca memória pras coordenadas
     //Recebe suas coordenadas X e Y
     b->local->x = aleat (0, N_TAMANHO_MUNDO-1);
     b->local->y = aleat (0, N_TAMANHO_MUNDO-1);
@@ -74,6 +75,7 @@ struct missao *cria_missao (int id){
         return NULL;
     
     m->id = id; //Recebe o id
+    m->local = malloc (sizeof (struct posicao)); //Aloca memória pras coordenadas
     //Recebe suas coordenadas X e Y
     m->local->x = aleat (0, N_TAMANHO_MUNDO-1);
     m->local->y = aleat (0, N_TAMANHO_MUNDO-1);
@@ -98,7 +100,6 @@ struct invasao *cria_invasao (int id){
         return NULL;
     
     i->id = id; //Recebe o id
-    //Recebe suas coordenadas X e Y
     i->local = aleat (0, N_BASES-1);
     i->tph = aleat (0, 4320);
     i->tpb = aleat (1, 7200); //Lotação máxima aleatória
@@ -118,6 +119,12 @@ struct mundo *cria_mundo (){
     if (!w) //Se tiver problemas na alocação, retorna NULL
         return NULL;
 
+    w->tamanho.x = N_TAMANHO_MUNDO;
+    w->tamanho.y = N_TAMANHO_MUNDO;
+    w->relogio = T_INICIO;
+    w->eventos_tratados = 0;
+    w->lef = fprio_cria();
+
     for (i = 0; i < N_HEROIS; i++) //Cria os heróis
         w->herois[i] = cria_heroi(i);
 
@@ -130,14 +137,7 @@ struct mundo *cria_mundo (){
     for (i = 0; i < N_INVASOES; i++) //Cria as invasões
         w->invasoes[i] = cria_invasao(i);
 
-    if (!w->herois || !w->bases || !w->missoes || !w->invasoes)
-        return NULL;
-    
-    w->tamanho.x = N_TAMANHO_MUNDO;
-    w->tamanho.y = N_TAMANHO_MUNDO;
-    w->relogio = T_INICIO;
-    w->eventos_tratados = 0;
-    w->lef = fprio_cria();
+    eventos_iniciais();
 
     return w;
 }
