@@ -37,7 +37,34 @@ struct heroi *cria_heroi (int id){
 
 //Cria uma base com seus atributos
 struct base *cria_base (int id){
+    struct base *b = malloc (sizeof (struct base)); //Aloca memória para a base
 
+    if (!b) //Se tiver problemas na alocação, retorna NULL
+        return NULL;
+    
+    b->id = id; //Recebe o id
+    //Recebe suas coordenadas X e Y
+    b->local->x = aleat (0, N_TAMANHO_MUNDO);
+    b->local->y = aleat (0, N_TAMANHO_MUNDO);
+    b->lotacao = aleat (3, 10); //Lotação máxima aleatória
+    b->espera = fila_cria (); //Cria a fila de espera vazia
+    b->estado = 1; //Começa ativo
+    b->missoes = 0; //Começa com 0 missões participadas
+    b->max = 0; //Maior fila de espera encontrada na base
+
+    b->presentes = cjto_cria(b->lotacao); //Cria o conjunto de heróis presentes
+    if (!b->presentes){ //Se tiver problemas na alocação, libera e retorna NULL
+        free(b);
+        return NULL;
+    }
+
+    b->espera = fila_cria (); //Cria a fila de espera vazia
+    if (!b->espera){ //Se tiver problemas na alocação, libera e retorna NULL
+        free(b);
+        return NULL;
+    }
+
+    return b;
 }
 
 //Cria uma missão com seus atributos
