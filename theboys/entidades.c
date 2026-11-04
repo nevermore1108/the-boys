@@ -25,8 +25,8 @@ struct heroi *cria_heroi (int id){
     h->vel = aleat (50, 5000); //Velocidade Aleatória
     h->exp = 0; //Começa com 0 de exp
     h->base = -1; //Começa fora de qualquer base
+    
     h->hab = cjto_aleat(aleat(1, 3), N_HABILIDADES); //Cria o conjunto das habilidades
-
     if (!h->hab){ //Se tiver problemas na alocação, libera e retorna NULL
         free(h);
         return NULL;
@@ -44,10 +44,9 @@ struct base *cria_base (int id){
     
     b->id = id; //Recebe o id
     //Recebe suas coordenadas X e Y
-    b->local->x = aleat (0, N_TAMANHO_MUNDO);
-    b->local->y = aleat (0, N_TAMANHO_MUNDO);
+    b->local->x = aleat (0, N_TAMANHO_MUNDO-1);
+    b->local->y = aleat (0, N_TAMANHO_MUNDO-1);
     b->lotacao = aleat (3, 10); //Lotação máxima aleatória
-    b->espera = fila_cria (); //Cria a fila de espera vazia
     b->estado = 1; //Começa ativo
     b->missoes = 0; //Começa com 0 missões participadas
     b->max = 0; //Maior fila de espera encontrada na base
@@ -69,7 +68,26 @@ struct base *cria_base (int id){
 
 //Cria uma missão com seus atributos
 struct missao *cria_missao (int id){
+    struct missao *m = malloc (sizeof (struct missao)); //Aloca memória para a missao
 
+    if (!m) //Se tiver problemas na alocação, retorna NULL
+        return NULL;
+    
+    m->id = id; //Recebe o id
+    //Recebe suas coordenadas X e Y
+    m->local->x = aleat (0, N_TAMANHO_MUNDO-1);
+    m->local->y = aleat (0, N_TAMANHO_MUNDO-1);
+    m->perigo = aleat (1, 100); //Lotação máxima aleatória
+    m->completa = 0; //Começa incompleta
+    m->tentativas = 0; //0 tentativas na missão
+
+    m->hab = cjto_aleat(aleat(1, 3), N_HABILIDADES); //Cria o conjunto das habilidades
+    if (!m->hab){ //Se tiver problemas na alocação, libera e retorna NULL
+        free(m);
+        return NULL;
+    }
+
+    return m;
 }
 
 //Cria uma invasão com seus atributos
