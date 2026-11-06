@@ -6,6 +6,7 @@
 #include "fprio.h"
 #include "entidades.h"
 #include "auxiliares.h"
+#include "eventos.h"
 
 //Cria um herói com seus atributos
 //Retorno: ponteiro para o herói ou NULL se erro
@@ -103,6 +104,23 @@ struct invasao *cria_invasao (int id){
     return i;
 }
 
+void eventos_iniciais (struct mundo *w){
+    int i;
+    struct evento *evt = malloc (sizeof (struct evento)); //Aloca memória para o evento
+
+    if (!evt) //Se tiver problemas na alocação, retorna NULL
+        return;
+
+    for (int i = 0; i < N_HEROIS; i++){ //Eventos iniciais dos heróis
+        evt->id1 = i;
+        evt->id2 = aleat (0, N_BASES-1);
+        evt->tempo = aleat (0, 4320);
+        evt->tipo = EV_CHEGA;
+
+        fprio_insere
+    }
+}
+
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
 //Retorno: ponteiro para o mundo criado ou NULL se erro.
 struct mundo *cria_mundo (){
@@ -132,7 +150,7 @@ struct mundo *cria_mundo (){
     for (i = 0; i < N_INVASOES; i++) //Cria as invasões
         w->invasoes[i] = cria_invasao(i);
 
-    //eventos_iniciais();
+    eventos_iniciais(struct mundo *w);
 
     return w;
 }
