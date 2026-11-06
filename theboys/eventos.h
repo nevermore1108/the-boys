@@ -23,4 +23,30 @@ struct evento{
     int id2; //Segundo id usado pelo evento, NULL se não existe
 };
 
+void evento_chega (struct mundo *w, struct evento *evt);
+
+void evento_espera (struct mundo *w, struct evento *evt);
+
+void evento_desiste (struct mundo *w, struct evento *evt);
+
+void evento_avisa (struct mundo *w, struct evento *evt);
+
+void evento_entra (struct mundo *w, struct evento *evt);
+
+void evento_sai (struct mundo *w, struct evento *evt);
+
+void evento_viaja (struct mundo *w, struct evento *evt);
+
+void evento_morre (struct mundo *w, struct evento *evt);
+
+void evento_missao (struct mundo *w, struct evento *evt);
+
+void evento_invade (struct mundo *w, struct evento *evt);
+
+void evento_recupera_h (struct mundo *w, struct evento *evt);
+
+void evento_recupera_b (struct mundo *w, struct evento *evt);
+
+void evento_fim (struct mundo *w, struct evento *evt);
+
 #endif
