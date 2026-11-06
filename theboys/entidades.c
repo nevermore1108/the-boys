@@ -176,7 +176,7 @@ struct mundo *cria_mundo (){
     for (i = 0; i < N_INVASOES; i++) //Cria as invasões
         w->invasoes[i] = cria_invasao(i);
 
-    eventos_iniciais(struct mundo *w);
+    eventos_iniciais(w);
 
     return w;
 }
