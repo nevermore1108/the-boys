@@ -1,5 +1,5 @@
 #ifndef AUXILIARES
-#define AURILIARES
+#define AUXILIARES
 #include "conjunto.h"
 #include "fila.h"
 #include "fprio.h"
