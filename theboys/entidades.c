@@ -111,14 +111,42 @@ void eventos_iniciais (struct mundo *w){
     if (!evt) //Se tiver problemas na alocação, retorna NULL
         return;
 
-    for (int i = 0; i < N_HEROIS; i++){ //Eventos iniciais dos heróis
+    for (i = 0; i < N_HEROIS; i++){ //Eventos iniciais dos heróis
         evt->id1 = i;
         evt->id2 = aleat (0, N_BASES-1);
         evt->tempo = aleat (0, 4320);
         evt->tipo = EV_CHEGA;
 
-        fprio_insere
+        fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
     }
+
+    for (i = 0; i < N_MISSOES; i++){ //Missões são colocadas na lef
+        evt->id1 = i;
+        evt->id2 = NULL;
+        evt->tempo = aleat (0, T_FIM_DO_MUNDO);
+        evt->tipo = EV_MISSAO;
+
+        fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+    }
+
+    for (i = 0; i < N_INVASOES; i++){ //Invasões são colocadas na lef
+        evt->id1 = i;
+        evt->id2 = NULL;
+        evt->tempo = aleat ((60*24*3)+1, T_FIM_DO_MUNDO);
+        evt->tipo = EV_INVADE;
+
+        fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+    }
+
+    //Insere o fim no final da lef
+    evt->id1 = NULL;
+    evt->id2 = NULL;
+    evt->tempo = T_FIM_DO_MUNDO;
+    evt->tipo = EV_FIM;
+
+    fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+
+    return;
 }
 
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos

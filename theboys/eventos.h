@@ -20,7 +20,7 @@ struct evento{
     int tipo; //Tipo do evento 1 a 12
     int tempo; //Momento que o evento acontece
     int id1; //Primeiro id usado pelo evento
-    int id2; //Segundo id usado pelo evento, -1 se não existe
+    int id2; //Segundo id usado pelo evento, NULL se não existe
 };
 
 #endif
