@@ -8,5 +8,5 @@
 
 //Retorna um número aleatório entre min e max, inclusive
 long aleat (long min, long max){
-  return ((rand() % (2*max + 1)) + min);
+  return min + rand() % (min - max +1);
 }
