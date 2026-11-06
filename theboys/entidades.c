@@ -39,10 +39,9 @@ struct base *cria_base (int id){
         return NULL;
     
     b->id = id; //Recebe o id
-    b->local = malloc (sizeof (struct posicao)); //Aloca memória pras coordenadas
     //Recebe suas coordenadas X e Y
-    b->local->x = aleat (0, N_TAMANHO_MUNDO-1);
-    b->local->y = aleat (0, N_TAMANHO_MUNDO-1);
+    b->local.x = aleat (0, N_TAMANHO_MUNDO-1);
+    b->local.y = aleat (0, N_TAMANHO_MUNDO-1);
     b->lotacao = aleat (3, 10); //Lotação máxima aleatória
     b->estado = 1; //Começa ativo
     b->missoes = 0; //Começa com 0 missões participadas
@@ -71,10 +70,9 @@ struct missao *cria_missao (int id){
         return NULL;
     
     m->id = id; //Recebe o id
-    m->local = malloc (sizeof (struct posicao)); //Aloca memória pras coordenadas
     //Recebe suas coordenadas X e Y
-    m->local->x = aleat (0, N_TAMANHO_MUNDO-1);
-    m->local->y = aleat (0, N_TAMANHO_MUNDO-1);
+    m->local.x = aleat (0, N_TAMANHO_MUNDO-1);
+    m->local.y = aleat (0, N_TAMANHO_MUNDO-1);
     m->perigo = aleat (1, 100); //Lotação máxima aleatória
     m->completa = 0; //Começa incompleta
     m->tentativas = 0; //0 tentativas na missão
@@ -137,9 +135,6 @@ struct mundo *cria_mundo (){
 
     return w;
 }
-
-//Roda a simulação até chegar no fim da LEF
-void simulacao(struct mundo *w); //Levar pro simulação.c
 
 //Destrói o mundo criado, desalocando e liberando a memória utilizada 
 //Retorno: NULL

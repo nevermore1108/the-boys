@@ -64,7 +64,7 @@ struct mundo {
     struct posicao tamanho; //Tamanho máximo do mundo
     int relogio; //Tempo atual no mundo
     int eventos_tratados; //Quantidade de eventos tratados na simulação
-    int mortos
+    int mortos;
     struct fprio_t *lef; //Lista de Eventos Futuros 
 };
 
@@ -72,10 +72,6 @@ struct mundo {
 |*Retorno: ponteiro para o mundo criado ou NULL se erro
 |*Nota: Eu gostaria muito de ter chamado essa função de "big_bang" :( */
 struct mundo *cria_mundo (); 
-
-/*Roda a simulação até chegar no fim da LEF
-|*Nota: Eu gostaria muito de ter chamado essa função de "dia_a_dia" :(*/
-void simulacao(struct mundo *w);
 
 /*Destrói o mundo criado, desalocando e liberando a memória utilizada
 |*Retorno: NULL
