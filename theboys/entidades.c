@@ -108,7 +108,7 @@ void eventos_iniciais (struct mundo *w){
     int i;
     struct evento *evt = malloc (sizeof (struct evento)); //Aloca memória para o evento
 
-    if (!evt) //Se tiver problemas na alocação, retorna NULL
+    if (!evt) //Se tiver problemas na alocação, retorna
         return;
 
     for (i = 0; i < N_HEROIS; i++){ //Eventos iniciais dos heróis
@@ -152,8 +152,6 @@ void eventos_iniciais (struct mundo *w){
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
 //Retorno: ponteiro para o mundo criado ou NULL se erro.
 struct mundo *cria_mundo (){
-    srand(time (NULL));
-
     int i;
     struct mundo *w = malloc (sizeof (struct mundo)); //Aloca memória para o mundo
 
