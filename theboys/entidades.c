@@ -18,20 +18,11 @@ struct heroi *cria_heroi (int id){
     h->id = id; //Recebe o id
     h->estado = 1; //Começa ativo
     h->paciencia = aleat (1, 100); //Paciência aleatória
-    printf ("\n");
-    printf ("%d\n", h->paciencia);
-    printf ("\n");
     h->vel = aleat (50, 5000); //Velocidade Aleatória
-    /*printf ("\n");
-    printf ("%d\n", h->vel);
-    printf ("\n");*/
     h->exp = 0; //Começa com 0 de exp
     h->base = -1; //Começa fora de qualquer base
     
     h->hab = cjto_aleat(aleat(1, 3), N_HABILIDADES); //Cria o conjunto das habilidades
-    /*printf ("\n");
-    cjto_imprime (h->hab);
-    printf ("\n");*/
     if (!h->hab){ //Se tiver problemas na alocação, libera e retorna NULL
         free(h);
         return NULL;
@@ -50,17 +41,8 @@ struct base *cria_base (int id){
     b->id = id; //Recebe o id
     //Recebe suas coordenadas X e Y
     b->local.x = aleat (0, N_TAMANHO_MUNDO-1);
-    /*printf ("\n");
-    printf ("%d\n", b->local.x);
-    printf ("\n");*/
     b->local.y = aleat (0, N_TAMANHO_MUNDO-1);
-    /*printf ("\n");
-    printf ("%d\n", b->local.y);
-    printf ("\n");*/
     b->lotacao = aleat (3, 10); //Lotação máxima aleatória
-    /*printf ("\n");
-    printf ("%d\n", b->lotacao);
-    printf ("\n");*/
     b->estado = 1; //Começa ativo
     b->missoes = 0; //Começa com 0 missões participadas
     b->max = 0; //Maior fila de espera encontrada na base
@@ -90,24 +72,12 @@ struct missao *cria_missao (int id){
     m->id = id; //Recebe o id
     //Recebe suas coordenadas X e Y
     m->local.x = aleat (0, N_TAMANHO_MUNDO-1);
-    /*printf ("\n");
-    printf ("%d\n", m->local.x);
-    printf ("\n");*/
     m->local.y = aleat (0, N_TAMANHO_MUNDO-1);
-    /*printf ("\n");
-    printf ("%d\n", m->local.y);
-    printf ("\n");*/
     m->perigo = aleat (1, 100); //Perigo aleatório
-    /*printf ("\n");
-    printf ("%d\n", m->perigo);
-    printf ("\n");*/
     m->completa = 0; //Começa incompleta
     m->tentativas = 0; //0 tentativas na missão
 
-    m->hab = cjto_aleat(aleat(1, 3), N_HABILIDADES); //Cria o conjunto das habilidades
-    /*printf ("\n");
-    cjto_imprime (m->hab);
-    printf ("\n");*/
+    m->hab = cjto_aleat(aleat(6, 10), N_HABILIDADES); //Cria o conjunto das habilidades
     if (!m->hab){ //Se tiver problemas na alocação, libera e retorna NULL
         free(m);
         return NULL;
@@ -124,18 +94,10 @@ struct invasao *cria_invasao (int id){
         return NULL;
     
     i->id = id; //Recebe o id
-    i->local = aleat (0, N_BASES-1);
-    /*printf ("\n");
-    printf ("%d\n", i->local);
-    printf ("\n");*/
+    i->local = aleat (0, N_BASES-1); //Seleciona a base aleatóriamente
+    //Tempos de penalidade aleatórios
     i->tph = aleat (0, 4320);
-    /*printf ("\n");
-    printf ("%d\n", i->tph);
-    printf ("\n");*/
     i->tpb = aleat (1, 7200);
-    /*printf ("\n");
-    printf ("%d\n", i->tpb);
-    printf ("\n");*/
     i->realizada = 0; //Começa incompleta
 
     return i;
@@ -144,7 +106,7 @@ struct invasao *cria_invasao (int id){
 //Cria o mundo, com seus heróis, bases, missões e invasões definidos
 //Retorno: ponteiro para o mundo criado ou NULL se erro.
 struct mundo *cria_mundo (){
-    srand(0);
+    srand(time (NULL));
 
     int i;
     struct mundo *w = malloc (sizeof (struct mundo)); //Aloca memória para o mundo
