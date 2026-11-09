@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "entidades.h"
 #include "conjunto.h"
 #include "fprio.h"
@@ -40,4 +41,62 @@ void evento_chega (struct mundo *w, struct evento *evt){
     }
         
     fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+}
+
+void evento_fim (struct mundo *w, struct evento *evt){
+    int i, min_missoes, max_missoes;
+    int mortos = 0, missoes_cumpr = 0, soma = 0;
+    double media, taxa_missoes_cumpr, taxa_invasoes, taxa_mort;
+    w->relogio = T_FIM_DO_MUNDO + 1; //Seta o relógio para além do final
+
+    printf ("%6d: FIM\n", evt->tempo);
+
+    for (i = 0; i < N_HEROIS; i++){ //Percorre os heróis contando os mortos
+        if (w->herois[i]->morto){
+            mortos++;
+            printf("HEROI %2d MORTO PAC %3d VEL %4d EXP %4d HABS [ ", i, w->herois[i]->paciencia,
+            w->herois[i]->vel, w->herois[i]->exp);
+            cjto_imprime (w->herois[i]->hab);
+            printf(" ]\n");
+        }
+        else{
+            printf("HEROI %2d VIVO PAC %3d VEL %4d EXP %4d HABS [ ", i, w->herois[i]->paciencia,
+            w->herois[i]->vel, w->herois[i]->exp);
+            cjto_imprime (w->herois[i]->hab);
+            printf(" ]\n");
+        }
+    }
+
+    for (i = 0; i < N_BASES; i++){ //Percorre as bases contando as missoes cumpridas
+        missoes_cumpr += w->bases[i]->missoes;
+        printf("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", i, w->bases[i]->lotacao, 
+        w->bases[i]->max, w->bases[i]->missoes);
+    }
+    
+    printf("EVENTOS TRATADOS: %d\n", w->eventos_tratados);
+
+    taxa_missoes_cumpr = ((missoes_cumpr/N_MISSOES)*100);
+    printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)", missoes_cumpr, N_MISSOES, taxa_missoes_cumpr);
+
+    taxa_invasoes = ((w->invasoes_realizadas/N_INVASOES)*100);
+    printf("INVASÕES REALIZADAS: %d/%d (%.1f%%)", w->invasoes_realizadas, N_INVASOES, taxa_invasoes);
+
+    //Inicializações para os cálculos das missões
+    min_missoes = w->missoes[0]->tentativas;
+    max_missoes = w->missoes[0]->tentativas;
+    soma += w->missoes[0]->tentativas;
+
+    for (i = 1; i < N_MISSOES; i++){ //Calcula a menor, a maior e a soma das tentativas feitas nas missões
+        soma += w->missoes[i]->tentativas;
+        if (w->missoes[i]->tentativas < min_missoes)
+            min_missoes = w->missoes[i]->tentativas;
+        if (w->missoes[i]->tentativas > max_missoes)
+            max_missoes = w->missoes[i]->tentativas; 
+    }
+    media = soma/N_MISSOES; //Calcula a média de tentativas
+
+    printf("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f", min_missoes, max_missoes, media);
+
+    taxa_mort = ((mortos/N_HEROIS)*100);
+    printf("TAXA MORTALIDADE: %.1f%%", taxa_mort);
 }
