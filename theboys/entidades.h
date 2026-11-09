@@ -22,6 +22,7 @@ struct heroi {
     int id; //ID do herói
     struct cjto_t *hab; //Conjunto de habilidades do herói
     int estado; //Estado atual do herói, 1 (ativo) e 0 (inativo)
+    int morto; // 0 se o herói estiver vivo e 1 se morto
     int paciencia; //Nível de paciência do herói
     int vel; //Velocidade do herói
     int exp; //Quantidade de missões que o herói participou, experiência
@@ -64,7 +65,7 @@ struct mundo {
     struct posicao tamanho; //Tamanho máximo do mundo
     int relogio; //Tempo atual no mundo
     int eventos_tratados; //Quantidade de eventos tratados na simulação
-    int mortos;
+    int invasoes_realizadas; //Invasões que foram realizadas
     struct fprio_t *lef; //Lista de Eventos Futuros 
 };
 
