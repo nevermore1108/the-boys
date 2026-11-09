@@ -45,7 +45,10 @@ void evento_chega (struct mundo *w, struct evento *evt){
 }
 
 void evento_espera (struct mundo *w, struct evento *evt){
-    fila_insere (w->bases[evt->id2]->espera, &evt->id1); //Insere o Herói na fila de espera
+    int *heroi = malloc (sizeof(int)); //Aloca memória para o ponteiro
+    *heroi = evt->id1;
+
+    fila_insere (w->bases[evt->id2]->espera, heroi); //Insere o Herói na fila de espera
 
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", evt->tempo, evt->id1, evt->id2,
         fila_tamanho(w->bases[evt->id2]->espera));
@@ -78,6 +81,32 @@ void evento_desiste (struct mundo *w, struct evento *evt){
     evt_add->tempo = evt->tempo; //Tempo recebe agora
     evt_add->tipo = EV_VIAJA; //Tipo do evento
     fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+}
+
+void evento_avisa (struct mundo *w, struct evento *evt){
+    int *heroi;
+
+    printf("%6d: AVISA PORTEIRO BASE %d (%2d/%2d) FILA [ ", evt->tempo, evt->id1, 
+        cjto_card (w->bases[evt->id1]->presentes), w->bases[evt->id1]->lotacao);
+    fila_imprime(w->bases[evt->id1]->espera);
+    printf(" ]\n");
+
+    while ((w->bases[evt->id1]->lotacao > cjto_card (w->bases[evt->id1]->presentes))
+    && (fila_tamanho (w->bases[evt->id1]->espera) > 0)){
+        heroi = fila_retira (w->bases[evt->id1]->espera);
+        cjto_insere (w->bases[evt->id1]->presentes, *heroi);
+
+        struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+        if (!evt_add) //Se tiver problemas na alocação, retorna
+            return;
+    
+        evt_add->id1 = *heroi; //ID1 recebe id do herói
+        evt_add->id2 = evt->id1; //ID2 recebe o id da base;
+        evt_add->tempo = evt->tempo; //Tempo recebe agora
+        evt_add->tipo = EV_ENTRA; //Tipo do evento
+        fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+    }
 }
 
 void evento_fim (struct mundo *w, struct evento *evt){

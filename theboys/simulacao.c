@@ -22,10 +22,10 @@ void simula_mundo(struct mundo *w){
             case EV_DESISTE:
                 evento_desiste (w, evt_atual);
                 break;
-            /*case EV_AVISA:
+            case EV_AVISA:
                 evento_avisa (w, evt_atual);
                 break;
-            case EV_ENTRA:
+            /*case EV_ENTRA:
                 evento_entra (w, evt_atual);
                 break;
             case EV_SAI:
