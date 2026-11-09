@@ -11,7 +11,7 @@ void evento_chega (struct mundo *w, struct evento *evt){
     int espera;
     struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
-    if (!evt) //Se tiver problemas na alocação, retorna
+    if (!evt_add) //Se tiver problemas na alocação, retorna
         return;
 
     w->herois[evt->id1]->base = evt->id2; //Altera a base do herói para a base que chegou
@@ -30,12 +30,12 @@ void evento_chega (struct mundo *w, struct evento *evt){
 
     //Se espera for verdade e a base estiver ativa, o herói espera
     if ((espera) && (w->bases[evt->id2]->estado)){
-        evt->tipo = EV_ESPERA; //Tipo do evento
+        evt_add->tipo = EV_ESPERA; //Tipo do evento
         printf ("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) ESPERA\n", evt->tempo, evt->id1, 
             evt->id2, cjto_card(w->bases[evt->id2]->presentes), w->bases[evt->id2]->lotacao);
     }
     else{ //Caso contrário, desiste
-        evt->tipo = EV_DESISTE; //Tipo do evento
+        evt_add->tipo = EV_DESISTE; //Tipo do evento
         printf ("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) DESISTE\n", evt->tempo, evt->id1, 
             evt->id2, cjto_card(w->bases[evt->id2]->presentes), w->bases[evt->id2]->lotacao);
     }
