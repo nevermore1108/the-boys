@@ -106,6 +106,8 @@ void evento_avisa (struct mundo *w, struct evento *evt){
         evt_add->tempo = evt->tempo; //Tempo recebe agora
         evt_add->tipo = EV_ENTRA; //Tipo do evento
         fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+
+        free(heroi);
     }
 }
 
