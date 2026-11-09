@@ -23,6 +23,7 @@ struct evento{
     int id2; //Segundo id usado pelo evento, NULL se não existe
 };
 
+//Herói H chega na base B, no instante T e avalia se vai esperar ou não
 void evento_chega (struct mundo *w, struct evento *evt);
 
 void evento_espera (struct mundo *w, struct evento *evt);
