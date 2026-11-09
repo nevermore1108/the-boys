@@ -5,11 +5,8 @@
 
 //Roda a simulação até chegar no fim da LEF
 void simula_mundo(struct mundo *w){
-    struct evento *evt_atual = malloc (sizeof (struct evento)); //Aloca memória para o evento
+    struct evento *evt_atual;
     int tipo, tempo;
-
-    if (!evt_atual) //Se tiver problemas na alocação, retorna
-        return;
 
     while (w->relogio <= T_FIM_DO_MUNDO){ //Enquanto o relógio não for maior, simula o mundo
         evt_atual = fprio_retira (w->lef, &tipo, &tempo); //Remove o evento atual da lef
@@ -19,10 +16,10 @@ void simula_mundo(struct mundo *w){
             case EV_CHEGA:
                 evento_chega (w, evt_atual);
                 break;
-            /*case EV_ESPERA:
+            case EV_ESPERA:
                 evento_espera (w, evt_atual);
                 break;
-            case EV_DESISTE:
+            /*case EV_DESISTE:
                 evento_desiste (w, evt_atual);
                 break;
             case EV_AVISA:
@@ -56,8 +53,7 @@ void simula_mundo(struct mundo *w){
                 evento_fim (w, evt_atual);
                 break;
         }
+        free (evt_atual);
     }
-
-    free (evt_atual);
     return;
 }
