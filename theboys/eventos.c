@@ -76,10 +76,10 @@ void evento_fim (struct mundo *w, struct evento *evt){
     printf("EVENTOS TRATADOS: %d\n", w->eventos_tratados);
 
     taxa_missoes_cumpr = ((missoes_cumpr/N_MISSOES)*100);
-    printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)", missoes_cumpr, N_MISSOES, taxa_missoes_cumpr);
+    printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", missoes_cumpr, N_MISSOES, taxa_missoes_cumpr);
 
     taxa_invasoes = ((w->invasoes_realizadas/N_INVASOES)*100);
-    printf("INVASÕES REALIZADAS: %d/%d (%.1f%%)", w->invasoes_realizadas, N_INVASOES, taxa_invasoes);
+    printf("INVASÕES REALIZADAS: %d/%d (%.1f%%)\n", w->invasoes_realizadas, N_INVASOES, taxa_invasoes);
 
     //Inicializações para os cálculos das missões
     min_missoes = w->missoes[0]->tentativas;
@@ -95,8 +95,8 @@ void evento_fim (struct mundo *w, struct evento *evt){
     }
     media = soma/N_MISSOES; //Calcula a média de tentativas
 
-    printf("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f", min_missoes, max_missoes, media);
+    printf("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f\n", min_missoes, max_missoes, media);
 
     taxa_mort = ((mortos/N_HEROIS)*100);
-    printf("TAXA MORTALIDADE: %.1f%%", taxa_mort);
+    printf("TAXA MORTALIDADE: %.1f%%\n", taxa_mort);
 }
