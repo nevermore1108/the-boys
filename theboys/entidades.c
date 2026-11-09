@@ -18,6 +18,7 @@ struct heroi *cria_heroi (int id){
     
     h->id = id; //Recebe o id
     h->estado = 1; //Começa ativo
+    h->morto = 0; //Começa vivo
     h->paciencia = aleat (1, 100); //Paciência aleatória
     h->vel = aleat (50, 5000); //Velocidade Aleatória
     h->exp = 0; //Começa com 0 de exp
@@ -50,6 +51,7 @@ struct base *cria_base (int id){
 
     b->presentes = cjto_cria(b->lotacao); //Cria o conjunto de heróis presentes
     if (!b->presentes){ //Se tiver problemas na alocação, libera e retorna NULL
+        cjto_destroi(b->presentes);
         free(b);
         return NULL;
     }
@@ -106,45 +108,45 @@ struct invasao *cria_invasao (int id){
 
 void eventos_iniciais (struct mundo *w){
     int i;
-    struct evento *evt = malloc (sizeof (struct evento)); //Aloca memória para o evento
-
-    if (!evt) //Se tiver problemas na alocação, retorna
-        return;
 
     for (i = 0; i < N_HEROIS; i++){ //Eventos iniciais dos heróis (chega)
-        evt->id1 = i; //ID1 recebe id do herói
-        evt->id2 = aleat (0, N_BASES-1); //ID2 recebe id da base
-        evt->tempo = aleat (0, 4320); //Instante que vai chegar
-        evt->tipo = EV_CHEGA; //Tipo do evento
+        struct evento *evt_h = malloc (sizeof (struct evento)); //Aloca memória para o evento
+        evt_h->id1 = i; //ID1 recebe id do herói
+        evt_h->id2 = aleat (0, N_BASES-1); //ID2 recebe id da base
+        evt_h->tempo = aleat (0, 4320); //Instante que vai chegar
+        evt_h->tipo = EV_CHEGA; //Tipo do evento
 
-        fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+        fprio_insere(w->lef, evt_h,evt_h->tipo,evt_h->tempo);
     }
 
     /*for (i = 0; i < N_MISSOES; i++){ //Missões são colocadas na lef
-        evt->id1 = i; //ID1 recebe o id da missão
-        evt->id2 = -1; //ID2 é -1
-        evt->tempo = aleat (0, T_FIM_DO_MUNDO); //Instante que vai acontecer
-        evt->tipo = EV_MISSAO; //Tipo do evento
+        struct evento *evt_m = malloc (sizeof (struct evento)); //Aloca memória para o evento
+        evt_m->id1 = i; //ID1 recebe o id da missão
+        evt_m->id2 = -1; //ID2 é -1
+        evt_m->tempo = aleat (0, T_FIM_DO_MUNDO); //Instante que vai acontecer
+        evt_m->tipo = EV_MISSAO; //Tipo do evento
 
-        fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+        fprio_insere(w->lef, evt_m,evt_m->tipo,evt_m->tempo);
     }*/
 
     /*for (i = 0; i < N_INVASOES; i++){ //Invasões são colocadas na lef
-        evt->id1 = i; //ID1 recebe o id da invasão
-        evt->id2 = -1; //ID2 é -1
-        evt->tempo = aleat ((60*24*3)+1, T_FIM_DO_MUNDO); //Instante que vai acontecer
-        evt->tipo = EV_INVADE; //Tipo do evento
+        struct evento *evt_i = malloc (sizeof (struct evento)); //Aloca memória para o evento
+        evt_i->id1 = i; //ID1 recebe o id da invasão
+        evt_i->id2 = -1; //ID2 é -1
+        evt_i->tempo = aleat ((60*24*3)+1, T_FIM_DO_MUNDO); //Instante que vai acontecer
+        evt_i->tipo = EV_INVADE; //Tipo do evento
 
-        fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+        fprio_insere(w->lef, evt_i,evt_i->tipo,evt_i->tempo);
     }*/
 
     //Insere o fim no final da lef
-    evt->id1 = -1; //ID1 é -1
-    evt->id2 = -1; //ID2 é -1
-    evt->tempo = T_FIM_DO_MUNDO; //Instante final
-    evt->tipo = EV_FIM; //Tipo do evento
+    struct evento *evt_f = malloc (sizeof (struct evento)); //Aloca memória para o evento
+    evt_f->id1 = -1; //ID1 é -1
+    evt_f->id2 = -1; //ID2 é -1
+    evt_f->tempo = T_FIM_DO_MUNDO; //Instante final
+    evt_f->tipo = EV_FIM; //Tipo do evento
 
-    fprio_insere(w->lef, evt,evt->tipo,evt->tempo);
+    fprio_insere(w->lef, evt_f,evt_f->tipo,evt_f->tempo);
 
     return;
 }
@@ -162,6 +164,7 @@ struct mundo *cria_mundo (){
     w->tamanho.y = N_TAMANHO_MUNDO;
     w->relogio = T_INICIO;
     w->eventos_tratados = 0;
+    w->invasoes_realizadas = 0;
     w->lef = fprio_cria();
 
     for (i = 0; i < N_HEROIS; i++) //Cria os heróis
