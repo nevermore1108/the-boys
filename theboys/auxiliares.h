@@ -1,8 +1,5 @@
 #ifndef AUXILIARES
 #define AUXILIARES
-#include "conjunto.h"
-#include "fila.h"
-#include "fprio.h"
 
 //Retorna um número aleatório entre min e max, inclusive
 long aleat (long min, long max);
