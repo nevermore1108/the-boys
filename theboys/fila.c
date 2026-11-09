@@ -104,7 +104,7 @@ void fila_imprime (struct fila_t *f){
   	struct fila_nodo_t *aux = f->prim;
 
 	while (aux){ //Imprime o item
-		printf ("%p", aux->item);
+		printf ("%d", *(int *)aux->item);
 
 		if (aux->prox) //Imprime espaço se tiver próximo
 			printf (" ");
