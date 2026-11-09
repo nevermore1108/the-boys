@@ -19,7 +19,7 @@ void simula_mundo(struct mundo *w){
             case EV_CHEGA:
                 evento_chega (w, evt_atual);
                 break;
-            case EV_ESPERA:
+            /*case EV_ESPERA:
                 evento_espera (w, evt_atual);
                 break;
             case EV_DESISTE:
@@ -51,7 +51,7 @@ void simula_mundo(struct mundo *w){
                 break;
             case EV_RECUPERA_B:
                 evento_recupera_b (w, evt_atual);
-                break;
+                break;*/
             case EV_FIM:
                 evento_fim (w, evt_atual);
                 break;
