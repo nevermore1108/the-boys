@@ -4,6 +4,7 @@
 #include "conjunto.h"
 #include "fprio.h"
 #include "fila.h"
+#include "auxiliares.h"
 #include "eventos.h"
 
 //Herói H chega na base B, no instante T e avalia se vai esperar ou não
@@ -13,11 +14,6 @@ void evento_chega (struct mundo *w, struct evento *evt){
 
     if (!evt_add) //Se tiver problemas na alocação, retorna
         return;
-
-    if (w->herois[evt->id1]->morto){ //Libera o evento se o herói estiver morto
-        free (evt);
-        return;
-    }
 
     w->herois[evt->id1]->base = evt->id2; //Altera a base do herói para a base que chegou
 
@@ -49,11 +45,6 @@ void evento_chega (struct mundo *w, struct evento *evt){
 }
 
 void evento_espera (struct mundo *w, struct evento *evt){
-    if (w->herois[evt->id1]->morto){ //Libera o evento se o herói estiver morto
-        free (evt);
-        return;
-    }
-
     fila_insere (w->bases[evt->id2]->espera, &evt->id1); //Insere o Herói na fila de espera
 
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", evt->tempo, evt->id1, evt->id2,
@@ -71,6 +62,21 @@ void evento_espera (struct mundo *w, struct evento *evt){
     evt_add->id2 = -1; //ID2 recebe -1;
     evt_add->tempo = evt->tempo; //Tempo recebe agora
     evt_add->tipo = EV_AVISA; //Tipo do evento
+    fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+}
+
+void evento_desiste (struct mundo *w, struct evento *evt){
+    printf("%6d: DESIST HEROI %2d BASE %d\n", evt->tempo, evt->id1, evt->id2);
+
+    struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+    if (!evt_add) //Se tiver problemas na alocação, retorna
+        return;
+    
+    evt_add->id1 = evt->id1; //ID1 recebe id do herói
+    evt_add->id2 = aleat (0, N_BASES); //ID2 recebe uma base destino aleatória;
+    evt_add->tempo = evt->tempo; //Tempo recebe agora
+    evt_add->tipo = EV_VIAJA; //Tipo do evento
     fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
 }
 
