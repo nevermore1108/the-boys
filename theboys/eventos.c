@@ -94,11 +94,6 @@ void evento_avisa (struct mundo *w, struct evento *evt){
         struct heroi *prim = fila_retira (w->bases[evt->id1]->espera);
         cjto_insere (w->bases[evt->id1]->presentes, prim->id);
         printf("%6d: AVISA PORTEIRO BASE %d ADMITE %2d\n", evt->tempo, evt->id1, prim->id);
-        
-        printf ("Aqui: ");
-        cjto_imprime (w->bases[evt->id1]->presentes);
-        printf("\n");
-        printf("\n");
 
         struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 

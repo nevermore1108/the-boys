@@ -49,7 +49,7 @@ struct base *cria_base (int id){
     b->missoes = 0; //Começa com 0 missões participadas
     b->max = 0; //Maior fila de espera encontrada na base
 
-    b->presentes = cjto_cria(b->lotacao); //Cria o conjunto de heróis presentes
+    b->presentes = cjto_cria(N_HEROIS); //Cria o conjunto de heróis presentes
     if (!b->presentes){ //Se tiver problemas na alocação, libera e retorna NULL
         cjto_destroi(b->presentes);
         free(b);
