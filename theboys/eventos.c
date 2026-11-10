@@ -77,7 +77,7 @@ void evento_desiste (struct mundo *w, struct evento *evt){
         return;
     
     evt_add->id1 = evt->id1; //ID1 recebe id do herói
-    evt_add->id2 = aleat (0, N_BASES); //ID2 recebe uma base destino aleatória;
+    evt_add->id2 = aleat (0, N_BASES-1); //ID2 recebe uma base destino aleatória;
     evt_add->tempo = evt->tempo; //Tempo recebe agora
     evt_add->tipo = EV_VIAJA; //Tipo do evento
     fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
@@ -108,6 +108,24 @@ void evento_avisa (struct mundo *w, struct evento *evt){
 
         free(prim);
     }
+}
+
+void evento_entra (struct mundo *w, struct evento *evt){
+    int tpb = 15 + (w->herois[evt->id1]->paciencia * aleat (1, 20));
+
+    struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+    if (!evt_add) //Se tiver problemas na alocação, retorna
+        return;
+    
+    evt_add->id1 = evt->id1; //ID1 recebe id do herói
+    evt_add->id2 = evt->id2; //ID2 recebe o id da base;
+    evt_add->tempo = (evt->tempo) + tpb; //Tempo recebe agora
+    evt_add->tipo = EV_SAI; //Tipo do evento
+    fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+
+    printf ("%6d: ENTRA HEROI %2d BASE %d (%2d/%2d) SAI %d\n", evt->tempo, evt->id1, evt->id2,
+        cjto_card(w->bases[evt->id2]->presentes), w->bases[evt->id2]->lotacao, evt_add->tempo);
 }
 
 void evento_fim (struct mundo *w, struct evento *evt){
