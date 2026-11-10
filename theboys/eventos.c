@@ -161,6 +161,8 @@ void evento_viaja (struct mundo *w, struct evento *evt){
     int dist = distancia(w->bases[w->herois[evt->id1]->base]->local, w->bases[evt->id2]->local);
     int duracao = dist/(w->herois[evt->id1]->vel);
 
+    w->herois[evt->id1]->base = -1;
+
     struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
     if (!evt_add) //Se tiver problemas na alocação, retorna
@@ -174,6 +176,45 @@ void evento_viaja (struct mundo *w, struct evento *evt){
     
     printf("%6d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", evt->tempo, evt->id1,
         w->herois[evt->id1]->base, evt->id2, dist,w->herois[evt->id1]->vel, evt_add->tempo);
+}
+
+void evento_morre (struct mundo *w, struct evento *evt){
+    struct fprio_t *lef_temp = fprio_cria();
+    int tipo, tempo;
+    int id_base = w->herois[evt->id1]->base;
+    struct evento *prim;
+
+    printf("%6d: MORRE HEROI %2d MISSAO %d\n", evt->tempo, evt->id1, evt->id2); //ID2 é a missão
+
+    cjto_retira(w->bases[id_base]->presentes, evt->id1);
+
+    w->herois[evt->id1]->morto = 1;
+
+    while ((prim = fprio_retira(w->lef, &tipo, &tempo)) != NULL){
+        struct evento *evt2 = prim;
+
+        if ((evt2->id1 == evt->id1) && (evt2->tipo == EV_ESPERA || evt2->tipo == EV_DESISTE || evt2->tipo == EV_VIAJA ||
+            evt2->tipo == EV_ENTRA || evt2->tipo == EV_SAI || evt2->tipo == EV_RECUPERA_B))
+            free(evt2);
+        else
+            fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
+    }
+
+    while ((prim = fprio_retira(lef_temp, &tipo, &tempo)) != NULL)
+        fprio_insere(w->lef, prim, prim->tipo, prim->tempo);
+    
+    fprio_destroi(lef_temp);
+
+    struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+    if (!evt_add) //Se tiver problemas na alocação, retorna
+        return;
+    
+    evt_add->id1 = id_base; //ID1 recebe id da base
+    evt_add->id2 = -1; //ID2 recebe -1;
+    evt_add->tempo = evt->tempo; //Tempo recebe agora
+    evt_add->tipo = EV_AVISA; //Tipo do evento
+    fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
 }
 
 void evento_fim (struct mundo *w, struct evento *evt){
