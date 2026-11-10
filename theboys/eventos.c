@@ -217,6 +217,23 @@ void evento_morre (struct mundo *w, struct evento *evt){
     fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
 }
 
+void evento_invade (struct mundo *w, struct evento *evt){
+    if (w->bases[w->invasoes[evt->id1]->local]->estado){
+        w->invasoes[evt->id1]->realizada = 1;
+        printf("%6d: INVADE BASE %2d INVADE %d\n", evt->tempo, w->invasoes[evt->id1]->local, evt->id1);
+
+        for (int i = 0; i < N_HEROIS; i++){
+            if (cjto_pertence(w->bases[w->invasoes[evt->id1]->local]->presentes, i))
+                w->herois[i]->estado = 0;
+                
+        }
+        printf("%6d: INVADE BASE %2d HEROIS INATIVOS [ ", evt->tempo, w->invasoes[evt->id1]->local);
+        cjto_imprime(w->bases[w->invasoes[evt->id1]->local]->presentes);
+        printf(" ]\n");
+        printf("%6d: INVADE BASE %2d INATIVA", evt->tempo, w->invasoes[evt->id1]->local);
+    }
+}
+
 void evento_fim (struct mundo *w, struct evento *evt){
     int i, min_missoes, max_missoes;
     int mortos = 0, missoes_cumpr = 0, soma = 0;

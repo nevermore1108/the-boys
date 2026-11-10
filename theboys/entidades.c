@@ -129,7 +129,7 @@ void eventos_iniciais (struct mundo *w){
         fprio_insere(w->lef, evt_m,evt_m->tipo,evt_m->tempo);
     }*/
 
-    /*for (i = 0; i < N_INVASOES; i++){ //Invasões são colocadas na lef
+    for (i = 0; i < N_INVASOES; i++){ //Invasões são colocadas na lef
         struct evento *evt_i = malloc (sizeof (struct evento)); //Aloca memória para o evento
         evt_i->id1 = i; //ID1 recebe o id da invasão
         evt_i->id2 = -1; //ID2 é -1
@@ -137,7 +137,7 @@ void eventos_iniciais (struct mundo *w){
         evt_i->tipo = EV_INVADE; //Tipo do evento
 
         fprio_insere(w->lef, evt_i,evt_i->tipo,evt_i->tempo);
-    }*/
+    }
 
     //Insere o fim no final da lef
     struct evento *evt_f = malloc (sizeof (struct evento)); //Aloca memória para o evento

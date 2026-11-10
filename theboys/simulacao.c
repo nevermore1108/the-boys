@@ -40,10 +40,10 @@ void simula_mundo(struct mundo *w){
             /*case EV_MISSAO:
                 evento_missao (w, evt_atual);
                 break;*/
-            /*case EV_INVADE:
+            case EV_INVADE:
                 evento_invade (w, evt_atual);
                 break;
-            case EV_RECUPERA_H:
+            /*case EV_RECUPERA_H:
                 evento_recupera_h (w, evt_atual);
                 break;
             case EV_RECUPERA_B:
