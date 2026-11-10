@@ -131,7 +131,8 @@ void evento_entra (struct mundo *w, struct evento *evt){
 void evento_sai (struct mundo *w, struct evento *evt){
     cjto_retira(w->bases[evt->id2]->presentes, evt->id1);
 
-    printf("%6d: SAI HEROI %2d BASE %d (%2d/%2d)\n", evt->tempo, evt->id1, evt->id2, cjto_card(w->bases[evt->id2]->presentes), w->bases[evt->id2]->lotacao);
+    printf("%6d: SAI HEROI %2d BASE %d (%2d/%2d)\n", evt->tempo, evt->id1, evt->id2,
+        cjto_card(w->bases[evt->id2]->presentes), w->bases[evt->id2]->lotacao);
 
     struct evento *evt_add1 = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
@@ -154,6 +155,25 @@ void evento_sai (struct mundo *w, struct evento *evt){
     evt_add2->tempo = evt->tempo; //Tempo recebe agora
     evt_add2->tipo = EV_AVISA; //Tipo do evento
     fprio_insere(w->lef, evt_add2,evt_add2->tipo,evt_add2->tempo);
+}
+
+void evento_viaja (struct mundo *w, struct evento *evt){
+    int dist = distancia(w->bases[w->herois[evt->id1]->base]->local, w->bases[evt->id2]->local);
+    int duracao = dist/(w->herois[evt->id1]->vel);
+
+    struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+    if (!evt_add) //Se tiver problemas na alocação, retorna
+        return;
+
+    evt_add->id1 = evt->id1; //ID1 recebe id do herói
+    evt_add->id2 = evt->id2; //ID2 recebe o id da base;
+    evt_add->tempo = (evt->tempo) + duracao; //Tempo recebe agora
+    evt_add->tipo = EV_CHEGA; //Tipo do evento
+    fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
+    
+    printf("%6d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", evt->tempo, evt->id1,
+        w->herois[evt->id1]->base, evt->id2, dist,w->herois[evt->id1]->vel, evt_add->tempo);
 }
 
 void evento_fim (struct mundo *w, struct evento *evt){

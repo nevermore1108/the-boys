@@ -31,10 +31,10 @@ void simula_mundo(struct mundo *w){
             case EV_SAI:
                 evento_sai (w, evt_atual);
                 break;
-            /*case EV_VIAJA:
+            case EV_VIAJA:
                 evento_viaja (w, evt_atual);
                 break;
-            case EV_MORRE:
+            /*case EV_MORRE:
                 evento_morre (w, evt_atual);
                 break;
             case EV_MISSAO:
