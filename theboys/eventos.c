@@ -279,12 +279,20 @@ void evento_invade (struct mundo *w, struct evento *evt){
         if (!evt_add) //Se tiver problemas na alocação, retorna
             return;
     
-        evt_add->id1 = id_base; //ID1 recebe id do herói
+        evt_add->id1 = id_base; //ID1 recebe id da base
         evt_add->id2 = -1; //ID2 recebe -1;
         evt_add->tempo = (evt->tempo) + w->invasoes[evt->id1]->tpb; //Tempo recebe agora + tph
         evt_add->tipo = EV_RECUPERA_B; //Tipo do evento
         fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
     }
+}
+
+void evento_recupera_h (struct mundo *w, struct evento *evt){
+    w->herois[evt->id1]->estado = 1;
+}
+
+void evento_recupera_b (struct mundo *w, struct evento *evt){
+    w->bases[evt->id1]->estado = 1;
 }
 
 void evento_fim (struct mundo *w, struct evento *evt){
