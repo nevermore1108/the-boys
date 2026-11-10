@@ -26,6 +26,7 @@ struct fila_t *fila_destroi (struct fila_t *f){
   	for (int i = 0; i < f->num; i++){ //Percorre a fila até o final
     	aux = f->prim; //Auxiliar recebe o ponteiro com o primeiro da fila
     	f->prim = aux->prox; //O ponteiro de início da fila recebe o próximo da fila
+		free (aux->item); //Desaloca o item
     	free (aux); //Desaloca o nodo auxiliar
   	}
 
