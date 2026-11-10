@@ -194,7 +194,7 @@ void evento_morre (struct mundo *w, struct evento *evt){
         struct evento *evt2 = prim;
 
         if ((evt2->id1 == evt->id1) && (evt2->tipo == EV_ESPERA || evt2->tipo == EV_DESISTE || evt2->tipo == EV_VIAJA ||
-            evt2->tipo == EV_ENTRA || evt2->tipo == EV_SAI || evt2->tipo == EV_RECUPERA_B))
+            evt2->tipo == EV_ENTRA || evt2->tipo == EV_SAI || evt2->tipo == EV_RECUPERA_H))
             free(evt2);
         else
             fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
@@ -218,19 +218,72 @@ void evento_morre (struct mundo *w, struct evento *evt){
 }
 
 void evento_invade (struct mundo *w, struct evento *evt){
-    if (w->bases[w->invasoes[evt->id1]->local]->estado){
+    int id_base = w->invasoes[evt->id1]->local;
+    if (w->bases[id_base]->estado){
         w->invasoes[evt->id1]->realizada = 1;
-        printf("%6d: INVADE BASE %2d INVADE %d\n", evt->tempo, w->invasoes[evt->id1]->local, evt->id1);
+        printf("%6d: INVADE BASE %2d INVADE %d\n", evt->tempo, id_base, evt->id1);
 
         for (int i = 0; i < N_HEROIS; i++){
-            if (cjto_pertence(w->bases[w->invasoes[evt->id1]->local]->presentes, i))
+            if (cjto_pertence(w->bases[id_base]->presentes, i)){
                 w->herois[i]->estado = 0;
-                
+
+                struct fprio_t *lef_temp = fprio_cria();
+                int tipo, tempo;
+                struct evento *prim;
+
+                while ((prim = fprio_retira(w->lef, &tipo, &tempo)) != NULL){
+                    struct evento *evt2 = prim;
+                    if ((evt2->id1 == evt->id1) && (evt2->tipo == EV_SAI))
+                        free(evt2);
+                    else
+                        fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
+                }
+
+                while ((prim = fprio_retira(lef_temp, &tipo, &tempo)) != NULL)
+                    fprio_insere(w->lef, prim, prim->tipo, prim->tempo);
+    
+                fprio_destroi(lef_temp);
+
+                struct evento *evt_add1 = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+                if (!evt_add1) //Se tiver problemas na alocação, retorna
+                    return;
+    
+                evt_add1->id1 = i; //ID1 recebe id do herói
+                evt_add1->id2 = -1; //ID2 recebe -1;
+                evt_add1->tempo = (evt->tempo) + w->invasoes[evt->id1]->tph; //Tempo recebe agora + tph
+                evt_add1->tipo = EV_RECUPERA_H; //Tipo do evento
+                fprio_insere(w->lef, evt_add1,evt_add1->tipo,evt_add1->tempo);
+
+                struct evento *evt_add2 = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+                if (!evt_add2) //Se tiver problemas na alocação, retorna
+                    return;
+    
+                evt_add2->id1 = i; //ID1 recebe id do herói
+                evt_add2->id2 = id_base; //ID2 recebe o id da base;
+                evt_add2->tempo = evt->tempo; //Tempo recebe agora
+                evt_add2->tipo = EV_SAI; //Tipo do evento
+                fprio_insere(w->lef, evt_add2,evt_add2->tipo,evt_add2->tempo);
+            }
         }
         printf("%6d: INVADE BASE %2d HEROIS INATIVOS [ ", evt->tempo, w->invasoes[evt->id1]->local);
         cjto_imprime(w->bases[w->invasoes[evt->id1]->local]->presentes);
         printf(" ]\n");
+
+        w->bases[id_base]->estado = 0;
         printf("%6d: INVADE BASE %2d INATIVA", evt->tempo, w->invasoes[evt->id1]->local);
+
+        struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
+
+        if (!evt_add) //Se tiver problemas na alocação, retorna
+            return;
+    
+        evt_add->id1 = id_base; //ID1 recebe id do herói
+        evt_add->id2 = -1; //ID2 recebe -1;
+        evt_add->tempo = (evt->tempo) + w->invasoes[evt->id1]->tpb; //Tempo recebe agora + tph
+        evt_add->tipo = EV_RECUPERA_B; //Tipo do evento
+        fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
     }
 }
 
