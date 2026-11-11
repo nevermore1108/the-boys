@@ -256,12 +256,23 @@ void evento_missao(struct mundo *w, struct evento *evt)
     int dist, estado;
     int bmp = 0;
     struct base *prim = malloc(sizeof(struct base));
+    struct base *b_escolhida = malloc(sizeof(struct base));
+    struct cjto_t *hab_b_escolhida = cjto_cria(N_HABILIDADES);
+
+    w->missoes[evt->id1]->tentativas++;
+
+    printf("%6d: MISSAO %d TENT %d HAB REQ: [ ", evt->tempo, evt->id1, w->missoes[evt->id1]->tentativas);
+    cjto_imprime(w->missoes[evt->id1]->hab);
+    printf(" ]\n");
+    printf("1\n");
 
     for (int i = 0; i < N_BASES; i++)
     {
         dist = distancia(w->bases[i]->local, w->missoes[evt->id1]->local);
         fprio_insere(bases, w->bases[i], w->bases[i]->estado, dist);
     }
+
+    printf("2\n");
 
     while (((prim = fprio_retira(bases, &estado, &dist)) != NULL) && bmp == 0)
     {
@@ -278,15 +289,24 @@ void evento_missao(struct mundo *w, struct evento *evt)
         }
 
         if (cjto_iguais(hab_b, w->missoes[evt->id1]->hab))
+        {
             bmp = 1;
+            b_escolhida = prim;
+            hab_b_escolhida = hab_b;
+        }
     }
+
+    free(prim);
+
+    printf("3\n");
 
     if (bmp)
     {
         w->missoes[evt->id1]->completa = 1;
         for (int j = 0; j < N_HEROIS; j++)
         {
-            if (cjto_pertence(prim->presentes, j) && (w->herois[j]->estado))
+            printf("%d\n", w->missoes[evt->id1]->completa);
+            if (cjto_pertence(b_escolhida->presentes, j) && (w->herois[j]->estado)) // aqui? tempo 2188
             {
                 int risco = w->missoes[evt->id1]->perigo / (w->herois[j]->paciencia + w->herois[j]->exp + 1);
 
@@ -307,6 +327,12 @@ void evento_missao(struct mundo *w, struct evento *evt)
                     w->herois[j]->exp++;
             }
         }
+
+        printf("%6d: MISSAO %d CUMPRIDA BASE %d HAB [ ", evt->tempo, evt->id1, b_escolhida->id);
+        cjto_imprime(hab_b_escolhida);
+        printf(" ]\n");
+
+        b_escolhida->missoes++;
     }
     else
     {
@@ -317,6 +343,8 @@ void evento_missao(struct mundo *w, struct evento *evt)
         evt_m->tipo = EV_MISSAO;                              // Tipo do evento
 
         fprio_insere(w->lef, evt_m, evt_m->tipo, evt_m->tempo);
+
+        printf("%6d: MISSAO %d IMPOSSIVEL\n", evt->tempo, evt->id1);
     }
 
     fprio_destroi(bases);
