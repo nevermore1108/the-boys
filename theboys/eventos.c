@@ -161,8 +161,6 @@ void evento_viaja (struct mundo *w, struct evento *evt){
     int dist = distancia(w->bases[w->herois[evt->id1]->base]->local, w->bases[evt->id2]->local);
     int duracao = dist/(w->herois[evt->id1]->vel);
 
-    w->herois[evt->id1]->base = -1;
-
     struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
     if (!evt_add) //Se tiver problemas na alocação, retorna
@@ -176,13 +174,47 @@ void evento_viaja (struct mundo *w, struct evento *evt){
     
     printf("%6d: VIAJA HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", evt->tempo, evt->id1,
         w->herois[evt->id1]->base, evt->id2, dist,w->herois[evt->id1]->vel, evt_add->tempo);
+
+    w->herois[evt->id1]->base = -1;
+}
+
+void remove_eventos (struct mundo *w, int heroi, int invasao){
+    struct fprio_t *lef_temp = fprio_cria();
+    int tipo, tempo;
+    struct evento *prim;
+
+    if(invasao){
+        while ((prim = fprio_retira(w->lef, &tipo, &tempo)) != NULL){
+            struct evento *evt2 = prim;
+            if ((evt2->id1 == heroi) && (evt2->tipo == EV_SAI))
+                free(evt2);
+            else
+                fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
+        }
+
+        while ((prim = fprio_retira(lef_temp, &tipo, &tempo)) != NULL)
+            fprio_insere(w->lef, prim, prim->tipo, prim->tempo);
+    }
+    else{
+        while ((prim = fprio_retira(w->lef, &tipo, &tempo)) != NULL){
+            struct evento *evt2 = prim;
+
+            if ((evt2->id1 == heroi) && (evt2->tipo == EV_ESPERA || evt2->tipo == EV_DESISTE || evt2->tipo == EV_VIAJA ||
+                evt2->tipo == EV_ENTRA || evt2->tipo == EV_SAI || evt2->tipo == EV_RECUPERA_H))
+                free(evt2);
+            else
+                fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
+        }
+
+        while ((prim = fprio_retira(lef_temp, &tipo, &tempo)) != NULL)
+            fprio_insere(w->lef, prim, prim->tipo, prim->tempo);
+    }
+
+    fprio_destroi(lef_temp);
 }
 
 void evento_morre (struct mundo *w, struct evento *evt){
-    struct fprio_t *lef_temp = fprio_cria();
-    int tipo, tempo;
     int id_base = w->herois[evt->id1]->base;
-    struct evento *prim;
 
     printf("%6d: MORRE HEROI %2d MISSAO %d\n", evt->tempo, evt->id1, evt->id2); //ID2 é a missão
 
@@ -190,20 +222,7 @@ void evento_morre (struct mundo *w, struct evento *evt){
 
     w->herois[evt->id1]->morto = 1;
 
-    while ((prim = fprio_retira(w->lef, &tipo, &tempo)) != NULL){
-        struct evento *evt2 = prim;
-
-        if ((evt2->id1 == evt->id1) && (evt2->tipo == EV_ESPERA || evt2->tipo == EV_DESISTE || evt2->tipo == EV_VIAJA ||
-            evt2->tipo == EV_ENTRA || evt2->tipo == EV_SAI || evt2->tipo == EV_RECUPERA_H))
-            free(evt2);
-        else
-            fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
-    }
-
-    while ((prim = fprio_retira(lef_temp, &tipo, &tempo)) != NULL)
-        fprio_insere(w->lef, prim, prim->tipo, prim->tempo);
-    
-    fprio_destroi(lef_temp);
+    remove_eventos(w, evt->id1, 0);
 
     struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
@@ -219,30 +238,16 @@ void evento_morre (struct mundo *w, struct evento *evt){
 
 void evento_invade (struct mundo *w, struct evento *evt){
     int id_base = w->invasoes[evt->id1]->local;
+
     if (w->bases[id_base]->estado){
-        w->invasoes[evt->id1]->realizada = 1;
-        printf("%6d: INVADE BASE %2d INVADE %d\n", evt->tempo, id_base, evt->id1);
+        w->invasoes_realizadas++;
+        printf("%6d: INVADE BASE %d INVADE %d\n", evt->tempo, id_base, evt->id1);
 
         for (int i = 0; i < N_HEROIS; i++){
             if (cjto_pertence(w->bases[id_base]->presentes, i)){
                 w->herois[i]->estado = 0;
 
-                struct fprio_t *lef_temp = fprio_cria();
-                int tipo, tempo;
-                struct evento *prim;
-
-                while ((prim = fprio_retira(w->lef, &tipo, &tempo)) != NULL){
-                    struct evento *evt2 = prim;
-                    if ((evt2->id1 == evt->id1) && (evt2->tipo == EV_SAI))
-                        free(evt2);
-                    else
-                        fprio_insere(lef_temp, evt2, evt2->tipo, evt2->tempo);
-                }
-
-                while ((prim = fprio_retira(lef_temp, &tipo, &tempo)) != NULL)
-                    fprio_insere(w->lef, prim, prim->tipo, prim->tempo);
-    
-                fprio_destroi(lef_temp);
+                remove_eventos(w, i, 1);
 
                 struct evento *evt_add1 = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
@@ -267,12 +272,12 @@ void evento_invade (struct mundo *w, struct evento *evt){
                 fprio_insere(w->lef, evt_add2,evt_add2->tipo,evt_add2->tempo);
             }
         }
-        printf("%6d: INVADE BASE %2d HEROIS INATIVOS [ ", evt->tempo, w->invasoes[evt->id1]->local);
+        printf("%6d: INVADE BASE %d HEROIS INATIVOS [ ", evt->tempo, w->invasoes[evt->id1]->local);
         cjto_imprime(w->bases[w->invasoes[evt->id1]->local]->presentes);
         printf(" ]\n");
 
         w->bases[id_base]->estado = 0;
-        printf("%6d: INVADE BASE %2d INATIVA", evt->tempo, w->invasoes[evt->id1]->local);
+        printf("%6d: INVADE BASE %d INATIVA\n", evt->tempo, w->invasoes[evt->id1]->local);
 
         struct evento *evt_add = malloc (sizeof (struct evento)); //Aloca memória para o evento a se adicionado
 
@@ -289,10 +294,14 @@ void evento_invade (struct mundo *w, struct evento *evt){
 
 void evento_recupera_h (struct mundo *w, struct evento *evt){
     w->herois[evt->id1]->estado = 1;
+
+    printf("%6d: RECUPERA HEROI %2d\n", evt->tempo, evt->id1);
 }
 
 void evento_recupera_b (struct mundo *w, struct evento *evt){
     w->bases[evt->id1]->estado = 1;
+
+    printf("%6d: RECUPERA BASE %d\n", evt->tempo, evt->id1);
 }
 
 void evento_fim (struct mundo *w, struct evento *evt){
@@ -327,10 +336,10 @@ void evento_fim (struct mundo *w, struct evento *evt){
     
     printf("EVENTOS TRATADOS: %d\n", w->eventos_tratados);
 
-    taxa_missoes_cumpr = ((missoes_cumpr/N_MISSOES)*100);
+    taxa_missoes_cumpr = 100.0*missoes_cumpr/N_MISSOES;
     printf("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", missoes_cumpr, N_MISSOES, taxa_missoes_cumpr);
 
-    taxa_invasoes = ((w->invasoes_realizadas/N_INVASOES)*100);
+    taxa_invasoes = 100.0*w->invasoes_realizadas/N_INVASOES;
     printf("INVASÕES REALIZADAS: %d/%d (%.1f%%)\n", w->invasoes_realizadas, N_INVASOES, taxa_invasoes);
 
     //Inicializações para os cálculos das missões
@@ -345,10 +354,10 @@ void evento_fim (struct mundo *w, struct evento *evt){
         if (w->missoes[i]->tentativas > max_missoes)
             max_missoes = w->missoes[i]->tentativas; 
     }
-    media = soma/N_MISSOES; //Calcula a média de tentativas
+    media = (double) soma/N_MISSOES; //Calcula a média de tentativas
 
     printf("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f\n", min_missoes, max_missoes, media);
 
-    taxa_mort = ((mortos/N_HEROIS)*100);
+    taxa_mort = 100.0*mortos/N_HEROIS;
     printf("TAXA MORTALIDADE: %.1f%%\n", taxa_mort);
 }

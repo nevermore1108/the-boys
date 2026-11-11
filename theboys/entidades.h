@@ -6,7 +6,7 @@
 
 #define T_INICIO 0
 #define T_FIM_DO_MUNDO 525600 //(30*24*60) 525600 = 60*24*365 = 365 dias
-#define N_TAMANHO_MUNDO 20000 //1000
+#define N_TAMANHO_MUNDO 1000 //20000 1000
 #define N_HABILIDADES 10
 #define N_HEROIS (N_HABILIDADES * 5)
 #define N_BASES (N_HEROIS / 5)
@@ -54,7 +54,6 @@ struct invasao {
     int local; //ID da base que vai ocorrer a invasão
     int tpb; //Tempo de penalidade da base
     int tph; //Tempo de penalidade do herói
-    int realizada; //Invasão foi realizada (1) ou não (0)
 };
 
 struct mundo {

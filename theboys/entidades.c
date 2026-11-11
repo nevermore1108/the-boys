@@ -101,7 +101,6 @@ struct invasao *cria_invasao (int id){
     //Tempos de penalidade aleatórios
     i->tph = aleat (0, 4320);
     i->tpb = aleat (1, 7200);
-    i->realizada = 0; //Começa incompleta
 
     return i;
 }
