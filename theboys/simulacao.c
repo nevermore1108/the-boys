@@ -37,9 +37,9 @@ void simula_mundo(struct mundo *w){
             case EV_MORRE:
                 evento_morre (w, evt_atual);
                 break;
-            /*case EV_MISSAO:
+            case EV_MISSAO:
                 evento_missao (w, evt_atual);
-                break;*/
+                break;
             case EV_INVADE:
                 evento_invade (w, evt_atual);
                 break;

@@ -236,6 +236,37 @@ void evento_morre (struct mundo *w, struct evento *evt){
     fprio_insere(w->lef, evt_add,evt_add->tipo,evt_add->tempo);
 }
 
+void evento_missao (struct mundo *w, struct evento *evt){
+    struct fprio_t *bases = fprio_cria();
+    int dist, bmp, estado;
+    struct base *prim;
+
+    for (int i = 0; i < N_BASES; i++){
+        dist = distancia(w->bases[i]->local, w->missoes[evt->id1]->local);
+        fprio_insere(bases, w->bases[i], w->bases[i]->estado, dist);
+    }
+
+    while (((prim = fprio_retira(w->lef, &estado, &dist)) != NULL) && bmp == 0){
+        struct cjto_t *hab_b = cjto_cria(N_HABILIDADES);
+
+        for (int j = 0; j < N_HEROIS; j++){
+            if (cjto_pertence(prim->presentes, j) && (w->herois[j]->estado)){
+                hab_b = cjto_uniao(hab_b, w->herois[j]->hab);
+            }
+        }
+
+        if (cjto_iguais(hab_b, w->missoes[evt->id1]->hab))
+            bmp = 1;
+    }
+
+    if (bmp){
+
+    }
+    else{
+        
+    }
+}
+
 void evento_invade (struct mundo *w, struct evento *evt){
     int id_base = w->invasoes[evt->id1]->local;
 

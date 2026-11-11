@@ -118,7 +118,7 @@ void eventos_iniciais (struct mundo *w){
         fprio_insere(w->lef, evt_h,evt_h->tipo,evt_h->tempo);
     }
 
-    /*for (i = 0; i < N_MISSOES; i++){ //Missões são colocadas na lef
+    for (i = 0; i < N_MISSOES; i++){ //Missões são colocadas na lef
         struct evento *evt_m = malloc (sizeof (struct evento)); //Aloca memória para o evento
         evt_m->id1 = i; //ID1 recebe o id da missão
         evt_m->id2 = -1; //ID2 é -1
@@ -126,7 +126,7 @@ void eventos_iniciais (struct mundo *w){
         evt_m->tipo = EV_MISSAO; //Tipo do evento
 
         fprio_insere(w->lef, evt_m,evt_m->tipo,evt_m->tempo);
-    }*/
+    }
 
     for (i = 0; i < N_INVASOES; i++){ //Invasões são colocadas na lef
         struct evento *evt_i = malloc (sizeof (struct evento)); //Aloca memória para o evento
