@@ -14,7 +14,7 @@
 // programa principal
 int main ()
 {
-  srand(0); //time (NULL).
+  srand(time (NULL)); //time (NULL).
   //Iniciar o mundo
   struct mundo *w = cria_mundo ();
   //Executar o laço de simulação

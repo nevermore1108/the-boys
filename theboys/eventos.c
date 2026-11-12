@@ -310,7 +310,7 @@ void evento_missao(struct mundo *w, struct evento *evt)
             {
                 int risco = w->missoes[evt->id1]->perigo / (w->herois[j]->paciencia + w->herois[j]->exp + 1);
 
-                if (risco > aleat(1, 30))
+                if (risco > aleat(0, 30))
                 {
                     struct evento *evt_add = malloc(sizeof(struct evento)); // Aloca memória para o evento a se adicionado
                     evt_add->id1 = j;            // ID1 recebe id do heroi
