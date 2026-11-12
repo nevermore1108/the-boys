@@ -96,22 +96,23 @@ void evento_avisa(struct mundo *w, struct evento *evt)
 
     while ((w->bases[evt->id1]->lotacao > cjto_card(w->bases[evt->id1]->presentes)) && (fila_tamanho(w->bases[evt->id1]->espera) != 0))
     {
-        struct heroi *prim = fila_retira(w->bases[evt->id1]->espera);
-        cjto_insere(w->bases[evt->id1]->presentes, prim->id);
-        printf("%6d: AVISA PORTEIRO BASE %d ADMITE %2d\n", evt->tempo, evt->id1, prim->id);
+        int *prim = fila_retira(w->bases[evt->id1]->espera);
+        int id_heroi = *prim;
+        free(prim);
+
+        cjto_insere(w->bases[evt->id1]->presentes, id_heroi);
+        printf("%6d: AVISA PORTEIRO BASE %d ADMITE %2d\n", evt->tempo, evt->id1, id_heroi);
 
         struct evento *evt_add = malloc(sizeof(struct evento)); // Aloca memória para o evento a se adicionado
 
         if (!evt_add) // Se tiver problemas na alocação, retorna
             return;
 
-        evt_add->id1 = prim->id;     // ID1 recebe id do herói
+        evt_add->id1 = id_heroi;     // ID1 recebe id do herói
         evt_add->id2 = evt->id1;     // ID2 recebe o id da base;
         evt_add->tempo = evt->tempo; // Tempo recebe agora
         evt_add->tipo = EV_ENTRA;    // Tipo do evento
         fprio_insere(w->lef, evt_add, evt_add->tipo, evt_add->tempo);
-
-        free(prim);
     }
 }
 
@@ -253,34 +254,35 @@ void evento_morre(struct mundo *w, struct evento *evt)
 void evento_missao(struct mundo *w, struct evento *evt)
 {
     struct fprio_t *bases = fprio_cria();
-    int dist, estado;
+    int dist, tipo;
     int bmp = 0;
-    struct base *prim = malloc(sizeof(struct base));
-    struct base *b_escolhida = malloc(sizeof(struct base));
-    struct cjto_t *hab_b_escolhida = cjto_cria(N_HABILIDADES);
+    int *id_base;
+    struct base *b_escolhida = NULL;
+    struct cjto_t *hab_b_escolhida = NULL;
 
     w->missoes[evt->id1]->tentativas++;
 
     printf("%6d: MISSAO %d TENT %d HAB REQ: [ ", evt->tempo, evt->id1, w->missoes[evt->id1]->tentativas);
     cjto_imprime(w->missoes[evt->id1]->hab);
     printf(" ]\n");
-    printf("1\n");
 
-    for (int i = 0; i < N_BASES; i++)
-    {
+    for (int i = 0; i < N_BASES; i++){
+        id_base = malloc(sizeof(int));
+        *id_base = i;
         dist = distancia(w->bases[i]->local, w->missoes[evt->id1]->local);
-        fprio_insere(bases, w->bases[i], w->bases[i]->estado, dist);
+        fprio_insere(bases, id_base, 0, dist);
     }
 
-    printf("2\n");
-
-    while (((prim = fprio_retira(bases, &estado, &dist)) != NULL) && bmp == 0)
+    while ((bmp == 0) && ((id_base = fprio_retira(bases, &tipo, &dist)) != NULL))
     {
+        struct base *b = w->bases[*id_base];
+        free(id_base);
+
         struct cjto_t *hab_b = cjto_cria(N_HABILIDADES);
 
         for (int j = 0; j < N_HEROIS; j++)
         {
-            if (cjto_pertence(prim->presentes, j) && (w->herois[j]->estado))
+            if (cjto_pertence(b->presentes, j) && (w->herois[j]->estado))
             {
                 struct cjto_t *aux = cjto_uniao(hab_b, w->herois[j]->hab);
                 cjto_destroi(hab_b);
@@ -288,24 +290,22 @@ void evento_missao(struct mundo *w, struct evento *evt)
             }
         }
 
-        if (cjto_iguais(hab_b, w->missoes[evt->id1]->hab))
+        if (cjto_contem(hab_b, w->missoes[evt->id1]->hab))
         {
             bmp = 1;
-            b_escolhida = prim;
+            b_escolhida = b;
             hab_b_escolhida = hab_b;
         }
+        else{
+            cjto_destroi(hab_b);
+        }
     }
-
-    free(prim);
-
-    printf("3\n");
 
     if (bmp)
     {
         w->missoes[evt->id1]->completa = 1;
         for (int j = 0; j < N_HEROIS; j++)
         {
-            printf("%d\n", w->missoes[evt->id1]->completa);
             if (cjto_pertence(b_escolhida->presentes, j) && (w->herois[j]->estado)) // aqui? tempo 2188
             {
                 int risco = w->missoes[evt->id1]->perigo / (w->herois[j]->paciencia + w->herois[j]->exp + 1);
@@ -313,10 +313,6 @@ void evento_missao(struct mundo *w, struct evento *evt)
                 if (risco > aleat(1, 30))
                 {
                     struct evento *evt_add = malloc(sizeof(struct evento)); // Aloca memória para o evento a se adicionado
-
-                    if (!evt_add) // Se tiver problemas na alocação, retorna
-                        return;
-
                     evt_add->id1 = j;            // ID1 recebe id do heroi
                     evt_add->id2 = evt->id1;     // ID2 recebe -1;
                     evt_add->tempo = evt->tempo; // Tempo recebe agora
@@ -333,6 +329,8 @@ void evento_missao(struct mundo *w, struct evento *evt)
         printf(" ]\n");
 
         b_escolhida->missoes++;
+
+        cjto_destroi(hab_b_escolhida);
     }
     else
     {
