@@ -31,7 +31,7 @@ struct fprio_t *fprio_destroi (struct fprio_t *f){
   for (int i = 0; i < f->num; i++){ //Percorre a fila até tamanho
     aux = f->prim; //Auxiliar recebe o ponteiro com o início da fila
     f->prim = aux->prox; //O ponteiro de início da fila recebe o próximo na fila
-    free(aux->item);
+    free(aux->item); //Desaloca o item do auxiliar
     free (aux); //Desaloca o auxiliar
   }
 
