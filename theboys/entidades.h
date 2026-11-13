@@ -24,7 +24,7 @@ struct heroi
     int id;             // ID do herói
     struct cjto_t *hab; // Conjunto de habilidades do herói
     int estado;         // Estado atual do herói, 1 (ativo) e 0 (inativo)
-    int morto;          // 0 se o herói estiver vivo e 1 se morto
+    int morto;          // Se o herói está morto (1) ou não (0)
     int paciencia;      // Nível de paciência do herói
     int vel;            // Velocidade do herói
     int exp;            // Quantidade de missões que o herói participou, experiência
@@ -68,7 +68,7 @@ struct mundo
     struct missao *missoes[N_MISSOES];    // Vetor com todas as missões
     struct invasao *invasoes[N_INVASOES]; // Vetor com todas as invasões
     struct posicao tamanho;               // Tamanho máximo do mundo
-    int relogio;                          // Tempo atual no mundo
+    int relogio;                          // Tempo atual no mundo (só está sendo usado para ver se chegou no final ou não)
     int eventos_tratados;                 // Quantidade de eventos tratados na simulação
     int invasoes_realizadas;              // Invasões que foram realizadas
     struct fprio_t *lef;                  // Lista de Eventos Futuros

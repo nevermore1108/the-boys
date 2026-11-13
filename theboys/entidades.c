@@ -34,6 +34,7 @@ struct heroi *cria_heroi (int id){
 }
 
 //Cria uma base com seus atributos
+//Retorno: ponteiro para a base ou NULL se erro
 struct base *cria_base (int id){
     struct base *b = malloc (sizeof (struct base)); //Aloca memória para a base
 
@@ -41,13 +42,15 @@ struct base *cria_base (int id){
         return NULL;
     
     b->id = id; //Recebe o id
+
     //Recebe suas coordenadas X e Y
     b->local.x = aleat (0, N_TAMANHO_MUNDO-1);
     b->local.y = aleat (0, N_TAMANHO_MUNDO-1);
+
     b->lotacao = aleat (3, 10); //Lotação máxima aleatória
     b->estado = 1; //Começa ativo
     b->missoes = 0; //Começa com 0 missões participadas
-    b->max = 0; //Maior fila de espera encontrada na base
+    b->max = 0; //Maior fila de espera encontrada na base, começa em 0
 
     b->presentes = cjto_cria(N_HEROIS); //Cria o conjunto de heróis presentes
     if (!b->presentes){ //Se tiver problemas na alocação, libera e retorna NULL
@@ -66,6 +69,7 @@ struct base *cria_base (int id){
 }
 
 //Cria uma missão com seus atributos
+//Retorno: ponteiro para a missão ou NULL se erro
 struct missao *cria_missao (int id){
     struct missao *m = malloc (sizeof (struct missao)); //Aloca memória para a missao
 
@@ -73,9 +77,11 @@ struct missao *cria_missao (int id){
         return NULL;
     
     m->id = id; //Recebe o id
+
     //Recebe suas coordenadas X e Y
     m->local.x = aleat (0, N_TAMANHO_MUNDO-1);
     m->local.y = aleat (0, N_TAMANHO_MUNDO-1);
+
     m->perigo = aleat (1, 100); //Perigo aleatório
     m->completa = 0; //Começa incompleta
     m->tentativas = 0; //0 tentativas na missão
@@ -90,6 +96,7 @@ struct missao *cria_missao (int id){
 }
 
 //Cria uma invasão com seus atributos
+//Retorno: ponteiro para a invasão ou NULL se erro
 struct invasao *cria_invasao (int id){
     struct invasao *i = malloc (sizeof (struct invasao)); //Aloca memória para a missao
 
@@ -97,7 +104,8 @@ struct invasao *cria_invasao (int id){
         return NULL;
     
     i->id = id; //Recebe o id
-    i->local = aleat (0, N_BASES-1); //Seleciona a base aleatóriamente
+    i->local = aleat (0, N_BASES-1); //Seleciona a base que vai ocorrer aleatóriamente
+
     //Tempos de penalidade aleatórios
     i->tph = aleat (0, 4320);
     i->tpb = aleat (1, 7200);
@@ -105,47 +113,48 @@ struct invasao *cria_invasao (int id){
     return i;
 }
 
+//Inicializa os primeiros eventos do mundo
 void eventos_iniciais (struct mundo *w){
     int i;
 
     for (i = 0; i < N_HEROIS; i++){ //Eventos iniciais dos heróis (chega)
         struct evento *evt_h = malloc (sizeof (struct evento)); //Aloca memória para o evento
         evt_h->id1 = i; //ID1 recebe id do herói
-        evt_h->id2 = aleat (0, N_BASES-1); //ID2 recebe id da base
+        evt_h->id2 = aleat (0, N_BASES-1); //ID2 recebe id da base, decidida aleatóriamente
         evt_h->tempo = aleat (0, 4320); //Instante que vai chegar
         evt_h->tipo = EV_CHEGA; //Tipo do evento
 
-        fprio_insere(w->lef, evt_h,evt_h->tipo,evt_h->tempo);
+        fprio_insere(w->lef, evt_h,evt_h->tipo,evt_h->tempo); //Insere na lef
     }
 
-    for (i = 0; i < N_MISSOES; i++){ //Missões são colocadas na lef
+    for (i = 0; i < N_MISSOES; i++){ //Todas as missões são colocadas na lef
         struct evento *evt_m = malloc (sizeof (struct evento)); //Aloca memória para o evento
         evt_m->id1 = i; //ID1 recebe o id da missão
-        evt_m->id2 = -1; //ID2 é -1
-        evt_m->tempo = aleat (0, T_FIM_DO_MUNDO); //Instante que vai acontecer
+        evt_m->id2 = -1; //ID2 é -1 (inválido pq não está sendo usado)
+        evt_m->tempo = aleat (0, T_FIM_DO_MUNDO); //Instante que vai acontecer, decidido aleatóriamente
         evt_m->tipo = EV_MISSAO; //Tipo do evento
 
-        fprio_insere(w->lef, evt_m,evt_m->tipo,evt_m->tempo);
+        fprio_insere(w->lef, evt_m,evt_m->tipo,evt_m->tempo); //Insere na lef
     }
 
-    for (i = 0; i < N_INVASOES; i++){ //Invasões são colocadas na lef
+    for (i = 0; i < N_INVASOES; i++){ //Todas as invasões são colocadas na lef
         struct evento *evt_i = malloc (sizeof (struct evento)); //Aloca memória para o evento
         evt_i->id1 = i; //ID1 recebe o id da invasão
-        evt_i->id2 = -1; //ID2 é -1
-        evt_i->tempo = aleat ((60*24*3)+1, T_FIM_DO_MUNDO); //Instante que vai acontecer
+        evt_i->id2 = -1; //ID2 é -1 (inválido pq não está sendo usado)
+        evt_i->tempo = aleat ((60*24*3)+1, T_FIM_DO_MUNDO); //Instante que vai acontecer, decidido aleatóriamente
         evt_i->tipo = EV_INVADE; //Tipo do evento
 
-        fprio_insere(w->lef, evt_i,evt_i->tipo,evt_i->tempo);
+        fprio_insere(w->lef, evt_i,evt_i->tipo,evt_i->tempo); //Insere na lef
     }
 
     //Insere o fim no final da lef
     struct evento *evt_f = malloc (sizeof (struct evento)); //Aloca memória para o evento
-    evt_f->id1 = -1; //ID1 é -1
-    evt_f->id2 = -1; //ID2 é -1
-    evt_f->tempo = T_FIM_DO_MUNDO; //Instante final
+    evt_f->id1 = -1; //ID1 é -1 (inválido pq não está sendo usado)
+    evt_f->id2 = -1; //ID2 é -1 (inválido pq não está sendo usado)
+    evt_f->tempo = T_FIM_DO_MUNDO; //Instante final, no qual esse evento vai acontecer
     evt_f->tipo = EV_FIM; //Tipo do evento
 
-    fprio_insere(w->lef, evt_f,evt_f->tipo,evt_f->tempo);
+    fprio_insere(w->lef, evt_f,evt_f->tipo,evt_f->tempo); //Insere na lef
 
     return;
 }
@@ -159,12 +168,14 @@ struct mundo *cria_mundo (){
     if (!w) //Se tiver problemas na alocação, retorna NULL
         return NULL;
 
+    //Inicializa o tamanho do mundo (coordenadas X e Y)
     w->tamanho.x = N_TAMANHO_MUNDO;
     w->tamanho.y = N_TAMANHO_MUNDO;
-    w->relogio = T_INICIO;
-    w->eventos_tratados = 0;
-    w->invasoes_realizadas = 0;
-    w->lef = fprio_cria();
+
+    w->relogio = T_INICIO; //Começa com o relógio em 0 (não vai mudar até chegar no fim)
+    w->eventos_tratados = 0; //Quantidade de eventos tratados começa em 0
+    w->invasoes_realizadas = 0; //Quantidade de eventos realizados começa em 0
+    w->lef = fprio_cria(); //Cria a lef
 
     for (i = 0; i < N_HEROIS; i++) //Cria os heróis
         w->herois[i] = cria_heroi(i);
@@ -178,7 +189,7 @@ struct mundo *cria_mundo (){
     for (i = 0; i < N_INVASOES; i++) //Cria as invasões
         w->invasoes[i] = cria_invasao(i);
 
-    eventos_iniciais(w);
+    eventos_iniciais(w); //Insere os eventos iniciais
 
     return w;
 }
@@ -225,7 +236,7 @@ struct mundo *destroi_mundo (struct mundo *w){
             free(w->invasoes[i]);
     }
 
-    w->lef = fprio_destroi(w->lef);
+    w->lef = fprio_destroi(w->lef); //Destroi a lef
     free(w);
 
     return NULL;
