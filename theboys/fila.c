@@ -3,7 +3,7 @@
 #include "fila.h"
 
 //Cria uma fila vazia.
-struct fila_t *fila_cria () {
+struct fila_t *fila_cria (){
 	struct fila_t *nova_f = malloc (sizeof (struct fila_t)); //Aloca memória para a fila
 	
   	if (!nova_f) //Se tiver problema na alocação da fila, retorna NULL
@@ -35,7 +35,7 @@ struct fila_t *fila_destroi (struct fila_t *f){
 }
 
 // Insere o item no final da fila.
-int fila_insere (struct fila_t *f, int /*void*/ *item) {
+int fila_insere (struct fila_t *f, int /*void*/ *item){
 	if (!f || !item) //Se não existir a fila ou o item, retorna -1
 		return -1;
 
@@ -68,7 +68,7 @@ int fila_insere (struct fila_t *f, int /*void*/ *item) {
 }
 
 // Retira o primeiro item da fila e o devolve.
-void *fila_retira (struct fila_t *f) {
+void *fila_retira (struct fila_t *f){
 	if (!f || !f->prim) //Se não existir a fila ou o primeiro item, retorna NULL
 		return NULL;
 

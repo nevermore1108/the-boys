@@ -4,7 +4,7 @@
 // descreve um nodo da fila 
 struct fila_nodo_t
 {
-	int /*void*/ *item ;			// item associado ao nodo
+	int *item ;			// item associado ao nodo
 	struct fila_nodo_t *prox;	// próximo nodo
 };
 
