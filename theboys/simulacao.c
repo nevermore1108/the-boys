@@ -11,6 +11,7 @@ void simula_mundo(struct mundo *w){
     while (w->relogio <= T_FIM_DO_MUNDO){                  // Enquanto o relógio não for maior, simula o mundo
         evt_atual = fprio_retira(w->lef, &tipo, &tempo);  // Remove o evento atual da lef
         w->eventos_tratados++;                           // Aumenta a quantidade de eventos tratados
+        w->relogio = tempo;                             // Atualiza o tempo do mundo
 
         switch (tipo){ // Chama os eventos
         case EV_CHEGA:
